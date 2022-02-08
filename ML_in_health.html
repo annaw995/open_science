@@ -575,7 +575,7 @@ rm(list = ls())
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb) max used  (Mb)
 ## Ncells 1123457 60.0    2130384 113.8  2130384 113.8
-## Vcells 1912183 14.6    8388608  64.0  3237947  24.8</code></pre>
+## Vcells 1912185 14.6    8388608  64.0  3237949  24.8</code></pre>
 <p>Note: Emptying the environment just trashes objects and frees RAM. Librarys are still active, so we do not need to load <em>tidyverse</em> again. Emptying the environment is strongly suggested whenever switching from one project to another to avoid using the wrong, already existing variables in the new project. Sometimes, it also is advisable to detach packages. This is done by the function <code>detach()</code>.</p>
 </div>
 <div id="load-the-data" class="section level2" number="2.3">
@@ -867,9 +867,9 @@ rn_model_full &lt;- lm(rn_frac ~ agegp+alcgp*tobgp, data = esoph[Training,])</co
 </thead>
 <tbody>
 <tr class="odd">
-<td>Parametric tests</td>
+<td><strong>Parametric tests</strong></td>
 <td></td>
-<td>Test the actual values</td>
+<td><em>Test the actual values</em></td>
 </tr>
 <tr class="even">
 <td>(paired) T-Test<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></td>
@@ -882,9 +882,9 @@ rn_model_full &lt;- lm(rn_frac ~ agegp+alcgp*tobgp, data = esoph[Training,])</co
 <td>Difference of means of two or more distributions</td>
 </tr>
 <tr class="even">
-<td>Non-parametric tests</td>
+<td><strong>Non-parametric tests</strong></td>
 <td></td>
-<td>Test the ranks of values</td>
+<td><em>Test the ranks of values</em></td>
 </tr>
 <tr class="odd">
 <td>Mann-Whitney-U-Test<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></td>

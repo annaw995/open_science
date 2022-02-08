@@ -719,10 +719,10 @@ We already did a correlation test on all our models. We calculated Pearson and S
 
 | Name | Condition to match | What they test for |
 |---|---|---|
-| Parametric   tests |  | Test the actual values |
+| **Parametric   tests** |  | *Test the actual values* |
 | (paired) T-Test^[Student. (1908). The   Probable Error of a Mean. Biometrika. https://doi.org/10.2307/2331554] | Normally distributed | Difference of means of two distributions |
 | ANOVA | Normally distributed, independent data | Difference of means of two or more distributions  |
-| Non-parametric   tests |  | Test the ranks of values |
+| **Non-parametric   tests** |  | *Test the ranks of values* |
 | Mann-Whitney-U-Test^[H. B. Mann, D. R.   Whitney (1947): On a Test of Whether one of Two Random Variables is   Stochastically Larger than the Other. Ann. Math. Statist. doi:   10.1214/aoms/1177730491] | Alternative to t-test if no normal distribution | Difference of sum of the ranks of the datapoints |
 | Wilcox-Test^[Wilcoxon,   F. (1945): Individual Comparisons by Ranking Methods. Biometrics Bulletin,   1(6), 80–83. https://doi.org/10.2307/3001968] | Alternative to paired t-test if no normal distribution | Difference of the sum of ranks of the difference between the data points |
 | Kruskal-Wallis H Test^[W. H. Kruskal, W.   A. Wallis (1952): Use of ranks in one-criterion variance analysis.Journal of   the American Statistical Association, doi:10.1080/01621459.1952.10483441] | Alternative to ANOVA if no normal distribution | Difference of sum of the ranks of the datapoints |
