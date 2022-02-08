@@ -453,7 +453,7 @@ Exercise: Reproduce this plot with the other grouping parameters!
 
 
 
-Another option to visualize the data and also to visualize several parameters at once are heatmaps. Heatmaps can be used to visualize even high dimensional data (like mRNA expression levels of different cell lines). This high dimensional data usually gets clustered in different ways (e.g. hierarchical clustering or k-means) so one can see patches of high or low data points among the different samples. However, since our data is already grouped and small we don't need to use a clustering algorithm. 
+Another option to visualize the data and also to visualize several parameters at once are heatmaps. Heatmaps can be used to visualize even high dimensional data (like mRNA expression levels of different cell lines). This high dimensional data usually gets clustered in different ways (e.g. hierarchical clustering or k-means) so one can see patches of high or low data points among the different samples. Since our data is already grouped and ordered we don't need to use a clustering algorithm and can just plot our data:
 
 ```{r}
 
@@ -512,7 +512,7 @@ esoph %>%
 ```
 
 
-Now we can train linear models to predict the fraction. We will train our model on 3/4 of our data and use the remaining quarter as a test set of unknown data which our model aims to predict. Therefore, we will split the data set randomly. Note: Randomly splitting something means that every time it is repeated other datapoints will be selected which will slightly variate the model. However, computers cannot be "random", each randomness always is based on some reference points. We can set those reference point and thus making our model reproducable by using a seed: 
+Now we can train linear models to predict the fraction. We will train our model on 2/3 of our data and use the remaining quarter as a test set of unknown data which our model aims to predict. Therefore, we will split the data set randomly. Note: Randomly splitting something means that every time it is repeated other datapoints will be selected which will slightly variate the model. However, computers cannot be "random", each randomness always is based on some reference points. We can set those reference point and thus making our model reproducable by using a seed: 
 
 ```{r}
 # set seed
@@ -544,12 +544,12 @@ Feel free to try other combinations or change the formula!
 
 To develop an actual Machine Learning algorithm one would not keep it that simple. One would:
 
-- train the model on several variations of the training set since every variation would change the model outcome. 
-- do some sort of cross-validation (k-fold-cross-validations) while training. 
-- use all above to select the optimal model parameters.
+- train the model on several variations of the training set since every variation would change the model outcome (k-fold-cross-variation). 
+- do several iterations with different randomly selected training data sets.
 - test those model parameters on new data. 
+- use all above (especially the first two) to select the optimal model parameters.
 
-For now, we will skip all steps beside the last one. But first let's have a look onto our model and how well it fits our data we trained it on. We can do that by using base R and the plot function. It will return four different plots: 
+To keep it simple and calculation times minimal we will only test our model on new data (the one not selected for training). But first, lets have a look onto our model and how well it fits our data we trained it on. We can do that by using base R and the plot function. It will return four different plots: 
 
 ```{r}
 plot(model_full)
@@ -582,13 +582,16 @@ esoph[-Training,] %>%
 
 ```
 
+
+And then plot our predicted data vs our real data. Ideally we would expect a perfect diagonal where predicted data perfectly matches the real data. We will also calculate the correlation between predicted and real data: 
+
 ```{r}
 Predictions %>% 
   # create a long tibble with all predictions in one column and all different model types in another column
   pivot_longer(age:full, names_to="model_vars", values_to = "prediction") %>% 
   # group by each model 
   group_by(model_vars) %>% 
-  # calculate different types of correlation between predicted and actual data
+  # calculate different types of correlation between predicted and actual data + the p values indicating the significance of this correlation
   mutate(pearson.c = cor.test(fraction, prediction, method = "pearson")$estimate, 
          pearson.p =  cor.test(fraction, prediction, method = "pearson")$p.value, 
          spearman.c = cor.test(fraction, prediction, method = "spearman")$estimate, 
@@ -696,7 +699,7 @@ Plus, even if we see that the correlations between real and random model predict
 
 ### Hypothesis tests
 
-Do answer these question we need to do hypothesis tests or analyse tests that have already been done while training the model, respectively. Generally, all these tests ask whether data points are equal (Null-Hypothesis) or not (Alternative-Hypothesis). Each test calculates a test statistic parameter based on sample size and certain criteria (different for each test). The test statistic corresponds to a certain probability that our Null-Hypothesis (data is equal) is true. A threshold of 5 % (p <= 0.05) is often used to reject the Null-Hypothesis and thus state, that one data set is significantly different from another one. 
+Do answer these question we need to do hypothesis tests or analyse tests that have already been done while training the model, respectively. Generally, statistical tests ask whether data points are equal (Null-Hypothesis; H0) or not (Alternative-Hypothesis; H1). Each test calculates a test statistic parameter based on sample size and certain criteria (different for each test). The test statistic corresponds to a certain probability that our Null-Hypothesis (data is equal) is true. A threshold of 5 % (p <= 0.05) is often used to reject the Null-Hypothesis and thus state, that one data set is significantly different from another one. 
 
 There is a variety of tests that we can use to analyse data for significant difference. Different types of distributions require different types of tests. In our case we are mainly interested in:
 
@@ -704,7 +707,7 @@ There is a variety of tests that we can use to analyse data for significant diff
 - Hypothesis tests 
 
 
-We already did a correlation test on all our models. We calculated Pearson and Spearman Correlations of our predictions and also looked onto the corresponding p-values. So, now we need to do Hypothesis Tests.
+We already did a correlation test on all our models. We calculated Pearson and Spearman correlations of our predictions and also looked at the corresponding p-values. So, now we need to do hypothesis tests. There are a bunch of different hypothesis tests, some of them require many specific conditions, others are less strict. It is advisable to understand the data one is working with and also the connections between data to then chose the best hypothesis test. 
 
 
 ![Flowchart to follow to select a hypothesis test from [Methodenberatung UZH   ](https://www.methodenberatung.uzh.ch/de/datenanalyse_spss/unterschiede/zentral.html).](https://www.methodenberatung.uzh.ch/static/entscheidbaum/baumzentral.jpg)
@@ -736,12 +739,10 @@ Based on our prediction accuracies we already got the impression that increasing
 summary(model_full)
 ```
 
-Since our model was trained on categorical variables each category (e.g. the different age groups) counts as a different parameter that can have another intercept. To get a summary of which feature (e.g. age generally is important) we can perform an ANOVA of all intercepts. This will then answer the question which features explained most of the variance in our data: 
+Since our model was trained on categorical variables each category (e.g. the different age groups) counts as a different parameter that can have another intercept. To get a summary of which feature (e.g. age generally) is important we can perform an ANOVA of all intercepts. This will then answer the question which features explained most of the variance in our data: 
 
 
 ```{r}
-
-
 anova(model_full)
 ```
 
@@ -777,7 +778,10 @@ None of these p-values are lower than the usual p-value cutoff (p <= 0.05). Why?
 
 
 Here, we run into a problem since there are many values around both ends of our distribution (0 and 1) which makes it difficult to do any hypothesis test. 
+
 However we could still argue that our age-alcohol model and our full model are more likely to be different from the random models than the other two options which corresponds to our correlation analysis. 
+
+
 
 #### Comparison of all actual models
 
@@ -805,7 +809,11 @@ multi.test <- function(dist1, dist2, dt){
   
   dt %>% 
     summarise(p.value = wilcox.test(unlist(.[, dist1]), unlist(.[, dist2]), paired = FALSE)$p.value, 
-              test.stat = wilcox.test(unlist(.[, dist1]), unlist(.[, dist2]), paired = FALSE)$statistic) -> test
+              test.stat = wilcox.test(unlist(.[, dist1]), unlist(.[, dist2]), paired = FALSE)$statistic) %>% 
+          # add column so we later know which distributions were compared with each other
+      add_column(comparison = paste(dist1, " vs ", dist2, sep = ""), 
+                 # add another column to later filter for unique columns
+                 filter = paste(sort(c(dist1, dist2)), collapse = "_")) -> test
   
   return(test)
     
@@ -821,12 +829,9 @@ names(Distributions) <- Distributions
 # loop / apply multi.test through whole data frame
 lapply(Distributions, function(dist1){
   lapply(Distributions[which(Distributions != dist1)], function(dist2, dt){
-    multi.test(dist1, dist2, dt) %>% 
-      # add column so we later know which distributions were compared with each other
-      add_column(comparison = paste(dist1, " vs ", dist2, sep = ""), 
-                 # add another column to later filter for unique columns
-                 filter = paste(sort(c(dist1, dist2)), collapse = "_")) -> test
+    test <- multi.test(dist1, dist2, dt) 
     return(test)
+    
   }, Predictions) %>% 
     # output of lapply is a list, we want a table -> bind_rows()
     bind_rows()
@@ -856,9 +861,6 @@ Final notes:
 2. Know how to interpret models. Based on our given data set we could also argue that getting cancer increases the alcohol consumption. Maybe as a painkiller... 
 
 3. Keep your model as easy as possible, especially if you want to interpret it. 
-
-
-
 
 
 
