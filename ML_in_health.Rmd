@@ -142,7 +142,9 @@ matrix(myvec, ncol = 2) # creates a matrix with two columns sorted by columns
 
 matrix(myvec, ncol = 2, byrow = TRUE) # creates a matrix with two columns sorted by rows
 
-matrix(myvec, ncol = 2, dimnames = list(c("A", "B", "D"), c("X", "Y"))) # creates a matrix with row and column names
+mymatrix <- matrix(myvec, ncol = 2, dimnames = list(c("A", "B", "D"), c("X", "Y"))) # creates a matrix with row and column names and assigns it to a variable called "mymatrix
+
+mymatrix # prints the matrix
 ```
 
 One can select single elements, rows or columns of a matrix similar to selecting elements in a vector using the indices: `mymatrix[rows, columns]`.
@@ -160,7 +162,7 @@ mymatrix["A",] # selects row named "A"
 ```
 
 ### Data frames
-Data frames also are two dimensional data containers. Unlike matrices each column can contain a different types of data. They are created using `data.frame()`. One can also convert into data frames by using the function `as.data.frame()`: 
+Data frames also are two dimensional data containers. Unlike matrices each column can contain a different type of data. They are created using `data.frame()`. One can also convert into data frames by using the function `as.data.frame()`: 
 
 ```{r}
 mydf <- data.frame("age" = c(22, 16, 17, 12, 14), 
@@ -170,7 +172,7 @@ mydf <- data.frame("age" = c(22, 16, 17, 12, 14),
 mydf
 
 ```
-Like matrices one could also name the rows: 
+Similar to matrices one could also name the rows: 
 ```{r}
 rownames(mydf) <- LETTERS[1:5] # sets rownames of mydf using the in-build vector LETTERS
 # one could also rename the columns using the similar function colnames()
@@ -212,10 +214,10 @@ mylist[2]
 ```
  
 ## Functions
-Right now we used several in-build functions. Since R is a mostly a function-based language (not object-based) basically all tasks are done by calling a function and giving parameters to this function. Basic R comes with hundreds of functions to perform calculations, plotting, .... Packages further expand the amount of functions to perform tasks easier. Often, functions called in R rely on other programming languages like C#, Python or Pearl. 
+Right now we used several in-build functions. Since R is a mostly a function-based language (not object-based) all tasks are done by calling a function and giving parameters to this function. Basic R comes with hundreds of functions to perform calculations, plotting, .... Packages further expand the amount of functions to perform tasks easier. Often, functions called in R rely on other programming languages like C#, Python or Pearl. 
 Anyways, functions are wrappers to perform more complex actions within one line to minimize the amount of copy & paste errors and lines of code. Hence, it is useful to also know how to write own functions. 
 
-So, lets create an exemplary function that calculates the mean, standard deviation and median of a series of numbers: 
+So, lets create an exemplary function that calculates the mean, standard deviation and median of a series of numbers and also introduce conditions: 
 
 ```{r}
 # summarize.numerics is the name of the function
@@ -246,7 +248,7 @@ summarize.numerics <- function(data, # data is the input for our function
 Let's call the function: 
 
 
-```{r}
+```{r, warning=TRUE, message=TRUE}
 summarize.numerics(data = mydf$age)
 summarize.numerics(data = mydf$age, calc.mean = FALSE)
 summarize.numerics(data = mydf$age, calc.mean = " ")
@@ -254,27 +256,28 @@ summarize.numerics(data = mydf$age, calc.mean = " ")
 
 
 ## Famous last words regarding programming
-There is much more to say and learn about R. However, the initial topic of our workshop is machine learning in health so the upper part really was just meant to give you a small introduction into R and how it works in case you ever come across again (if you stay in science you most likely will at some point). Also, it might be helpful to understand the things we did in the workshop and are written in the following part. 
+There is much more to say and learn about R. However, the initial topic of our workshop is machine learning in health so the upper part really was just meant to give you a small introduction into R and how it works in case you thumble over R again (if you stay in science you most likely will at some point). Also, it might be helpful to understand the things we did in the workshop and are written in the following part. 
 
 Finally, there are some general advises regarding any type of programming as well as R specific: 
 
 - Don't be afraid of searching for functions / how to's in the internet. The R community is pretty helpful and many questions might have been already asked (Especially [Stackoverflow](https://stackoverflow.com/) always is a good option). Also, most functions, packages, ... are well documented.
 - If you type a `?` in front of a function you don't understand or remember that well the documentation of this function will be opened in R Studio.
-- Always comment your code so you can still understand what you did a few years later.
+- Always comment your code so you can still understand what you did a few years later. Comments are explanarory lines of code that are not processed. In R, comments are written with a `#` in front.
 
 
 # Machine Learning in Health
 Machine Learning is a type of artificial intelligence that uses data to automatically predict the outcome of new, unknown data. 
-For example, one could train a model that predicts the survival rate of lung cancer patients. Exemplary, such a model could use genomic information: which genes are mutated. The machine learning algorithm would basically calculate the correlation between the different mutations (so-called features) and the overall-survival. Each feature in the end would have a parameter that defines its influence onto the survival. This model could then be used to predict the survival chances of new lung cancer patients given their mutation status.
+For example, one could train a model that predicts the survival rate of lung cancer patients. Exemplary, such a model could use genomic information: which genes are mutated. The machine learning algorithm would basically calculate the correlation between the different mutations (so-called features) and the overall-survival. Each feature in the end would have a parameter that defines its influence onto the survival. This model could then be used to predict the survival chances of new lung cancer patients given their mutation status or to identify the features (mutations) that are most important and thus potential drug targets.
 
 
 
 There are many different types of machine learning algorithms as well as many different cases where they are used. The type of machine learning favored to explain a matter depends on the type of data (categorical / numeric), the amount of data and features and the overall goal (explainable model for research purposes / performance). In health, machine learning is for example used for
 
-- analysis of clinical trial data or general clinical research
-- personalized medicine (which drug would be the best treatment for a certain patient?)
-- analysis of medical images (e.g. x-rays)
-- infectious disease outbreak prediction
+- analysis of clinical trial data or general clinical research.
+- personalized medicine (which drug would be the best treatment for a certain patient?).
+- analysis of medical images (e.g. x-rays).
+- infectious disease outbreak prediction.
+- evaluation of risk factors.
 
 <!-- Insert more about AI in health + sources?  -->
 
@@ -285,7 +288,7 @@ There are many different types of machine learning algorithms as well as many di
 The following part will contain most of the code we did run during the workshop. You should be able to perform every code chunk in your own R environment. 
 
 
-Generally, R is able to read in all types of data that can be downloaded from anywhere. You could for example load in any types of tables (.csv, .tsv, .xlxs, .txt, ...), plain text files or even images. For the sake of simplicity you do not need to manually download data from mostly not user friendly databases. Instead, we will use an [esophageal cancer data set](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/esoph.html)^[Breslow, N. E. and Day, N. E. (1980) Statistical Methods in Cancer Research. Volume 1: The Analysis of Case-Control Studies. IARC Lyon / Oxford University Press.] that is directly embedded in R.
+Generally, R is able to read in all types of data that can be downloaded from anywhere. You could for example load in any types of tables (.csv, .tsv, .xlxs, .txt, ...), plain text files or even images. For the sake of simplicity you do not need to manually download data from mostly not user friendly databases. Instead, we will use an [esophageal cancer data set](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/esoph.html)^[Breslow, N. E. and Day, N. E. (1980) Statistical Methods in Cancer Research. Volume 1: The Analysis of Case-Control Studies. IARC Lyon / Oxford University Press.] that is accessible after installing R.
 Additionally we will use the [*tidyverse*](https://www.tidyverse.org/packages/)^[Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, https://doi.org/10.21105/joss.01686] package.
 
 ### Install / load packages
@@ -311,13 +314,14 @@ For example, we can convert our data frame `mydf` into a tibble and then perform
 # one can use paragraphs and tabs to make nested functions more readable
 summarize( # function to perform summarising functions on data
   group_by( # group data by some variables (sex and some_binary_characterisation)
-    as.tibble( # make a tibble out of a data frame
-      mydf # the data
-      ),
+    as.tibble(mydf), # make a tibble out of a data frame
     sex, some_binary_characterisation), # grouping variables of mydf
   how_many = n(), # summarizing function one (count rows for different groups)
   avg_age = mean(age) # summarizing function two (calculate the mean among the different groups)
   )
+
+# can also be written like this: 
+summarize(group_by(as.tibble(mydf), sex, some_binary_characterisation), how_many = n(), avg_age = mean(age))
 
 
 
@@ -326,10 +330,10 @@ mydf %>%
   as.tibble() %>% 
   group_by(sex, some_binary_characterisation) %>% 
   summarize(how_many = n(), 
-            vg_age = mean(age))
+            avg_age = mean(age))
   
 
-# note that all of the functions used in this code (besides n() and mean()) are part of the tidyverse  
+# all of the functions used here (besides n() and mean()) are part of the tidyverse  
 
 ```
 
@@ -699,7 +703,7 @@ Plus, even if we see that the correlations between real and random model predict
 
 ### Hypothesis tests
 
-Do answer these question we need to do hypothesis tests or analyse tests that have already been done while training the model, respectively. Generally, statistical tests ask whether data points are equal (Null-Hypothesis; H0) or not (Alternative-Hypothesis; H1). Each test calculates a test statistic parameter based on sample size and certain criteria (different for each test). The test statistic corresponds to a certain probability that our Null-Hypothesis (data is equal) is true. A threshold of 5 % (p <= 0.05) is often used to reject the Null-Hypothesis and thus state, that one data set is significantly different from another one. 
+To answer these question we need to do hypothesis tests or analyse tests that have already been done while training the model, respectively. Generally, statistical tests ask whether data points are equal (Null-Hypothesis; H0) or not (Alternative-Hypothesis; H1). Each test calculates a test statistic parameter based on sample size and certain criteria (different for each test). The test statistic corresponds to a certain probability that our Null-Hypothesis (data is equal) is true. A threshold of 5 % (p <= 0.05) is often used to reject the Null-Hypothesis and thus state, that one data set is significantly different from another one. 
 
 There is a variety of tests that we can use to analyse data for significant difference. Different types of distributions require different types of tests. In our case we are mainly interested in:
 
@@ -707,7 +711,7 @@ There is a variety of tests that we can use to analyse data for significant diff
 - Hypothesis tests 
 
 
-We already did a correlation test on all our models. We calculated Pearson and Spearman correlations of our predictions and also looked at the corresponding p-values. So, now we need to do hypothesis tests. There are a bunch of different hypothesis tests, some of them require many specific conditions, others are less strict. It is advisable to understand the data one is working with and also the connections between data to then chose the best hypothesis test. 
+We already did a correlation test on all our models. We calculated Pearson and Spearman correlations of our predictions and also looked at the corresponding p-values. So, now we need to do hypothesis tests. There are a bunch of different hypothesis tests, some of them require many specific conditions, others are less strict. It is advisable to understand the data one is working with and also the connections between data to chose the best hypothesis test. 
 
 
 ![Flowchart to follow to select a hypothesis test from [Methodenberatung UZH   ](https://www.methodenberatung.uzh.ch/de/datenanalyse_spss/unterschiede/zentral.html).](https://www.methodenberatung.uzh.ch/static/entscheidbaum/baumzentral.jpg)
@@ -800,7 +804,7 @@ kruskal.test(Preds_Rnds$prediction~Preds_Rnds$model_vars)
 According to this, no model is significantly better than all the others. 
 
 
-Another option would be, to perform multiple U-Tests comparing all the models amongst each other.
+Another option would be, to perform multiple U-Tests comparing all the models among each other.
 
 
 ```{r}
@@ -811,9 +815,7 @@ multi.test <- function(dist1, dist2, dt){
     summarise(p.value = wilcox.test(unlist(.[, dist1]), unlist(.[, dist2]), paired = FALSE)$p.value, 
               test.stat = wilcox.test(unlist(.[, dist1]), unlist(.[, dist2]), paired = FALSE)$statistic) %>% 
           # add column so we later know which distributions were compared with each other
-      add_column(comparison = paste(dist1, " vs ", dist2, sep = ""), 
-                 # add another column to later filter for unique columns
-                 filter = paste(sort(c(dist1, dist2)), collapse = "_")) -> test
+      add_column(comparison = paste(sort(c(dist1, dist2)), collapse = "_")) -> test
   
   return(test)
     
@@ -838,29 +840,27 @@ lapply(Distributions, function(dist1){
 }) %>%
   # same
   bind_rows() %>% 
-  # filter table for unique values in filter so we have each result once
-  distinct(filter, .keep_all = TRUE) %>% 
+  # filter table for unique values in comparison so we have each result once
+  distinct(comparison, .keep_all = TRUE) %>% 
   # do multiple testing correction 
   mutate(p.value.adjust = p.adjust(p.value, method = "bonferroni"))
   
 
 ```
 
-Again, none of our tests is significant. Still, the correlation test clearly showed an increasing correlations between predicted probabilities and real probabilities as soon as the alcohol consumption was taken into account. Also, the correlation coefficients for the full model and the one only based on age and alcohol consumption were pretty high. Additionally, the ANOVA of our linear model including all features showed that alcohol consumption and age groups explained significantly more variance as the tobacco consumption.
-Altogether it indicates that a linear model based on age groups and alcohol consumption already is sufficient to predict the probability of developing esophageal cancer. 
+Again, none of our tests is significant. Still, the correlation test clearly showed an increasing correlation between predicted probabilities and real probabilities as soon as the alcohol consumption was taken into account. Also, the correlation coefficients for the full model and the one only based on age and alcohol consumption were pretty high. Additionally, the ANOVA of our linear model including all features showed that alcohol consumption and age groups explained significantly more variance as the tobacco consumption.
+Altogether it indicates that a linear model based on age groups and alcohol consumption already is sufficient to predict the probability of developing esophageal cancer. It also implies that increasing age and high alcohol consumption are main risk factors for developing esophageal cancer. Still, this ML-based assumption would need larger study cohorts to be verified... 
 
 
 
 ## Final notes
-
-Final notes: 
 
 
 1. Correlation is not causation! The most famous example is the one with storks and babies. Always keep in mind what data you are working with and whether what your analysis tells you makes sense. 
 
 2. Know how to interpret models. Based on our given data set we could also argue that getting cancer increases the alcohol consumption. Maybe as a painkiller... 
 
-3. Keep your model as easy as possible, especially if you want to interpret it. 
+3. Keep your model as simple as possible, especially if you want to interpret it. Fewer variables also decrease the influence of noise.
 
 
 
