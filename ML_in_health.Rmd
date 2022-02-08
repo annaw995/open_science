@@ -1,0 +1,867 @@
+---
+title: "Machine Learning in Health"
+author: Anna Sophie Welter
+date: 08.02.2022
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 5
+    number_sections: true
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, error = TRUE)
+```
+
+
+
+# Short introduction into R
+## General
+R ([download here](https://www.r-project.org/)) is a open source environment for statistical programming which is mainly used for data analysis (including data cleaning- and arranging, calculations, statistics, machine learning and plotting). It is running on all systems and can either be used in the console or via an graphical interface called R Studio [download here](https://www.rstudio.com/products/rstudio/). Feel free to download and install both of it and copy and paste the code blocks within this script into R/R Studio to follow each step.
+
+
+Since this is no "introduction into R" workshop we will just give a few examples on how to use R in general. If you are interested in learning more about data analysis (with R or other programming languages) we can recommend [DataCamp courses](https://www.datacamp.com/) or using free, virtual books found on the the [R Studio Website](https://www.rstudio.com/resources/books/). 
+
+
+To start with, there are a few differences between R and many other programming languages one should know when starting:
+
+- R starts counting at 1 and not 0.
+- assigning variables is usually done by an arrow `->` in either direction (pointing to the variable name), the equal sign `=` is usually used to define parameters in functions.
+- R is case sensitive.
+
+
+## R is a calculator
+
+Basically, R is a big calculator that can perform mathematical actions on different types of data. 
+
+Simplest, you can use R as a normal calculator that returns numerical values:
+
+```{r}
+5 + 10 
+3 * 2
+4 - 7
+7 / 3 
+4 ^ 2
+```
+
+
+You can then assign the results of your calculations to variables:
+```{r}
+a <- 5 + 10 
+b <- 3 * 2
+```
+
+And then calculate something using these variable: 
+```{r}
+(a+b)^2*a
+```
+
+
+You can also ask for logical responses, e.g. when comparing numerical values. A `TRUE`can also be seen as a `1` and a `FALSE` as `0`.  Notice that "is equal to" is asked for using `==` and "is not equal to" using `!=`:
+
+```{r}
+5 > 3
+5 < 3
+5 == 2
+5 != 2
+```
+
+
+R can not only work with numerical (or logical) values but also with character values or strings: 
+
+```{r}
+x <- "Machine Learning"
+y <- "in Health"
+```
+
+You cannot do calculations with mathematical operators on strings. Running e.g. `x+y` will return an error message. However, you can ask logical questions:
+```{r}
+x != y 
+x == y
+```
+
+
+## Storing several values at once
+So far, you only saw variables containing one value, which can be either numeric, logical or a character. You can store these values in different types of containers. In base R these containers are:
+
+- vectors
+- matrices
+- data frames
+- lists
+
+You can create these containers by using functions. Functions are implemented (or self written) wrappers to perform certain actions. For example the function `paste()` will paste variables together:  
+```{r}
+paste(x, y, sep = " ")
+```
+You can also write your own functions (see corresponding chapter). 
+But for now, let's head back to the data containers: 
+
+
+### Vectors
+Vectors are one dimensional data containers that can only contain data of one type, for example numeric values. They are created using the function `c()`:
+
+```{r}
+myvec <- c(1, 2, 2.3, 1.1, 6, 1) #assign a vector to a variable
+myvec # prints the given variable
+```
+
+You can select specific elements in this vector by specifying the index or several indices. Indices of vectors (and all other data containers) are defined in squared brackets `[]`.
+```{r}
+myvec[3] # selects the third element in myvec
+myvec[c(1,3)] # selects the first and the third element in vev
+
+```
+
+You can also figure out whether a specific element is in a vector:
+```{r}
+1 %in% myvec # asks whether 1 is in myvec
+1 == myvec # asks the same but for each element in myvec
+```
+
+
+You could also use a logical vector as returned by the last line of code to filter your initial vector: 
+```{r}
+myvec[1==myvec] # filter myvec for all values that are 1
+myvec[myvec > 2] # filter myvec for all values that are > 2
+```
+Or you could ask for the positions within myvec where myvec is 1 using the following function: 
+```{r}
+which(myvec==1)
+```
+
+### Matrices
+Matrices are two dimensional data containers that can only contain data of one type. They are created out of vectors using the function `matrix()`. One could also convert another data type (e.g. data frames) to a matrix using `as.matrix()`.
+
+
+```{r}
+matrix(myvec, ncol = 1) # creates a matrix with one column out of myvec
+
+matrix(myvec, ncol = 2) # creates a matrix with two columns sorted by columns
+
+matrix(myvec, ncol = 2, byrow = TRUE) # creates a matrix with two columns sorted by rows
+
+matrix(myvec, ncol = 2, dimnames = list(c("A", "B", "D"), c("X", "Y"))) # creates a matrix with row and column names
+```
+
+One can select single elements, rows or columns of a matrix similar to selecting elements in a vector using the indices: `mymatrix[rows, columns]`.
+Not that the selection of a single row/column will return a vector. 
+
+```{r}
+mymatrix <- matrix(myvec, ncol = 2, dimnames = list(c("A", "B", "D"), c("X", "Y")))
+
+mymatrix[,2] # selects second column
+mymatrix[1,] # selects first row
+mymatrix[1,2] # selects element in first row and second column
+
+mymatrix["A",] # selects row named "A"
+
+```
+
+### Data frames
+Data frames also are two dimensional data containers. Unlike matrices each column can contain a different types of data. They are created using `data.frame()`. One can also convert into data frames by using the function `as.data.frame()`: 
+
+```{r}
+mydf <- data.frame("age" = c(22, 16, 17, 12, 14), 
+                   "sex" = c("f", "f", "m", "m", "f"), 
+                   "some_binary_characterisation" = c(TRUE, FALSE, TRUE, TRUE, FALSE))
+
+mydf
+
+```
+Like matrices one could also name the rows: 
+```{r}
+rownames(mydf) <- LETTERS[1:5] # sets rownames of mydf using the in-build vector LETTERS
+# one could also rename the columns using the similar function colnames()
+
+mydf
+```
+
+The functions `rownames()` and `colnames()` can be used to set the corresponding names in every data type that has rows and columns (including data types that are not from base R). Vectors and lists can also contain named elements. Here one needs to use the function `names()`.
+
+Elements in a data frame can be accessed the same way as elements in matrices, using either the indices or the row and column names. However, there is one additional way to access columns of data frames using the `$`:
+
+```{r}
+
+# all three methods will return the same column of mydf
+mydf$age
+mydf[,1]
+mydf[,"age"]
+```
+
+
+### Lists
+Lists are literal containers where one can store any object: single variables, Vectors, matrices, data frames, other lists, tibbles, ...
+Lists are created by using the function `list()`.
+
+```{r}
+mylist <- list("vector" = myvec, "matrix" = mymatrix, "dataframe" = mydf) # create a list with named elements
+# renaming or naming afterwards is possible using the function names()
+```
+
+ Elements in lists can be accessed using the index but usually using double square brackets `mylist[[index/name_of_list_element]]` or the `$`: 
+```{r}
+mylist[[2]] # select the second element in mylist
+mylist[["matrix"]] # select the element named "matrix"
+mylist$matrix  
+
+# notice the difference when using a single square bracket
+mylist[2]
+
+```
+ 
+## Functions
+Right now we used several in-build functions. Since R is a mostly a function-based language (not object-based) basically all tasks are done by calling a function and giving parameters to this function. Basic R comes with hundreds of functions to perform calculations, plotting, .... Packages further expand the amount of functions to perform tasks easier. Often, functions called in R rely on other programming languages like C#, Python or Pearl. 
+Anyways, functions are wrappers to perform more complex actions within one line to minimize the amount of copy & paste errors and lines of code. Hence, it is useful to also know how to write own functions. 
+
+So, lets create an exemplary function that calculates the mean, standard deviation and median of a series of numbers: 
+
+```{r}
+# summarize.numerics is the name of the function
+summarize.numerics <- function(data, # data is the input for our function
+                               calc.mean = TRUE){ # calc.mean is an additional parameter with the default value TRUE
+  # now lets define what should be done when calling the function in the function body
+  
+  if(calc.mean == TRUE){ # if calc.mean is TRUE the mean will be calculated
+    # create a named vector that contains the results of mean, median and standard deviation calculation
+      summary_vec <- c("mean" = mean(data), 
+                       "median" = median(data), 
+                       "sd" = sd(data))
+  }else if(calc.mean == FALSE){ # if calc.mean is FALSE we do not calculate the mean
+          summary_vec <- c("median" = median(data), 
+                            "sd" = sd(data))
+  }else{# if for some reasons no value is given to cal.mean then give a warning
+    warning("no or wrong settings for calc.mean")
+    # but also calculate everything
+    summary_vec <- c("mean" = mean(data), 
+                     "median" = median(data), 
+                     "sd" = sd(data))
+  }
+  # return the result of our function
+  return(summary_vec)
+}
+```
+
+Let's call the function: 
+
+
+```{r}
+summarize.numerics(data = mydf$age)
+summarize.numerics(data = mydf$age, calc.mean = FALSE)
+summarize.numerics(data = mydf$age, calc.mean = " ")
+```
+
+
+## Famous last words regarding programming
+There is much more to say and learn about R. However, the initial topic of our workshop is machine learning in health so the upper part really was just meant to give you a small introduction into R and how it works in case you ever come across again (if you stay in science you most likely will at some point). Also, it might be helpful to understand the things we did in the workshop and are written in the following part. 
+
+Finally, there are some general advises regarding any type of programming as well as R specific: 
+
+- Don't be afraid of searching for functions / how to's in the internet. The R community is pretty helpful and many questions might have been already asked (Especially [Stackoverflow](https://stackoverflow.com/) always is a good option). Also, most functions, packages, ... are well documented.
+- If you type a `?` in front of a function you don't understand or remember that well the documentation of this function will be opened in R Studio.
+- Always comment your code so you can still understand what you did a few years later.
+
+
+# Machine Learning in Health
+Machine Learning is a type of artificial intelligence that uses data to automatically predict the outcome of new, unknown data. 
+For example, one could train a model that predicts the survival rate of lung cancer patients. Exemplary, such a model could use genomic information: which genes are mutated. The machine learning algorithm would basically calculate the correlation between the different mutations (so-called features) and the overall-survival. Each feature in the end would have a parameter that defines its influence onto the survival. This model could then be used to predict the survival chances of new lung cancer patients given their mutation status.
+
+
+
+There are many different types of machine learning algorithms as well as many different cases where they are used. The type of machine learning favored to explain a matter depends on the type of data (categorical / numeric), the amount of data and features and the overall goal (explainable model for research purposes / performance). In health, machine learning is for example used for
+
+- analysis of clinical trial data or general clinical research
+- personalized medicine (which drug would be the best treatment for a certain patient?)
+- analysis of medical images (e.g. x-rays)
+- infectious disease outbreak prediction
+
+<!-- Insert more about AI in health + sources?  -->
+
+
+
+## What we are doing
+
+The following part will contain most of the code we did run during the workshop. You should be able to perform every code chunk in your own R environment. 
+
+
+Generally, R is able to read in all types of data that can be downloaded from anywhere. You could for example load in any types of tables (.csv, .tsv, .xlxs, .txt, ...), plain text files or even images. For the sake of simplicity you do not need to manually download data from mostly not user friendly databases. Instead, we will use an [esophageal cancer data set](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/esoph.html)^[Breslow, N. E. and Day, N. E. (1980) Statistical Methods in Cancer Research. Volume 1: The Analysis of Case-Control Studies. IARC Lyon / Oxford University Press.] that is directly embedded in R.
+Additionally we will use the [*tidyverse*](https://www.tidyverse.org/packages/)^[Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, https://doi.org/10.21105/joss.01686] package.
+
+### Install / load packages
+```{r}
+if(!require(tidyverse)){ # asks whether the package tidyverse is not installed
+    install.packages("tidyverse") # if not installed, install it now
+}
+library(tidyverse) # loads the package into your R environment
+
+# loading a package is always necessary whenever starting a new R session
+```
+
+### Package explanation
+
+*tidyverse* is a bundle of smaller packages used for easy-to-read code, data rearranging, data cleaning and data plotting. Everything done with tidyverse functions can also be done in base R. However, using base R for rearraning and plotting data can be more complex compared to using a package developed for that purpose. Using *tidyverse* and especially the sub-package *magrittr* introduces a new way of writing code, known as 'piping'. To pipe one function into another one uses the pipe symbol: `%>%` (Shortcut: Ctrl+Shift+M). Piping avoids nested functions or saving any step done on data to a variable to keep it readable.
+The sub-package *tibbles* introduces another data format known as 'tibbles'. Tibbles basically are data frames that cannot have row names but do offer a few advantages. Printing any tibble will only show the first 10 rows and subsetting them is clearer than data frames. 
+
+For example, we can convert our data frame `mydf` into a tibble and then perform several actions on them: 
+
+```{r}
+# classic way of doing several actions on your data
+# nested functions are read from the inside to the outside
+# one can use paragraphs and tabs to make nested functions more readable
+summarize( # function to perform summarising functions on data
+  group_by( # group data by some variables (sex and some_binary_characterisation)
+    as.tibble( # make a tibble out of a data frame
+      mydf # the data
+      ),
+    sex, some_binary_characterisation), # grouping variables of mydf
+  how_many = n(), # summarizing function one (count rows for different groups)
+  avg_age = mean(age) # summarizing function two (calculate the mean among the different groups)
+  )
+
+
+
+# piping the same functions 
+mydf %>% 
+  as.tibble() %>% 
+  group_by(sex, some_binary_characterisation) %>% 
+  summarize(how_many = n(), 
+            vg_age = mean(age))
+  
+
+# note that all of the functions used in this code (besides n() and mean()) are part of the tidyverse  
+
+```
+
+
+## Empty environment
+
+Since we will start a new chapter and analysis, we will empty our current working environment from all objects created so far. 
+
+```{r}
+# empty environment 
+rm(list = ls())
+# empty RAM
+gc()
+```
+
+Note: Emptying the environment just trashes objects and frees RAM. Librarys are still active, so we do not need to load *tidyverse* again. Emptying the environment is strongly suggested whenever switching from one project to another to avoid using the wrong, already existing variables in the new project. Sometimes, it also is advisable to detach packages. This is done by the function `detach()`. 
+
+
+
+## Load the data
+R comes with several data sets that are based on actual, real life data. Some of those data sets come with installing of specific packages, others are part of the base R installation (and the package *datasets* that comes with it). You can find a list of pre-loaded data using the function `data()` without any parameters. 
+
+To access the data and load it into our R environment we need to use the function above and specify which data set we want to load. For now it is the data set "esoph".
+
+```{r}
+data("esoph")
+```
+
+
+## Data exploration
+The first step in any type of data analysis is to understand your data. Base R already comes with some useful functions to get an overview. With tidyverse things get even easier. 
+
+First, lets have a look on the type of data that we have:
+
+```{r}
+# are all base R functions
+class(esoph)
+dim(esoph)
+colnames(esoph)
+
+```
+
+So, `esoph` is a data frame with 88 rows and 5 columns with the names printed above.
+
+- *agegp*: The age of the study participants, age groups.
+- *alcgp*: Amount of alcohol consumed in g / day, alcohol groups.
+- *tobgp*: Amount of tobacco consumed in g / day, tobacco groups. 
+- *ncases*: Number of diagnosed esophageal cancers.
+- *ncontrols*: Number of not-cancerous study participants. 
+
+
+
+
+Let's have a look at the data contained in there. We can do that in several ways. We can have a look on the first few columns or ask R to give us some sort of overview or summary.  
+```{r}
+# prints the first 6 rows of our object
+head(esoph)
+
+# display the structure of our object
+str(esoph)
+# same as str() but from tidyverse, trys to show as much data as possible
+glimpse(esoph)
+
+# summarizes the values in each column (comes from tidyverse)
+summary(esoph)
+
+```
+
+Especially using the `summary()` function is pretty useful since it would also print the number of `NA` in our data if any and alert us for other weird data (negative values where we would expect none, ...).
+The esoph data set is already cleared up and hence is not containing any weird data. Still, cleaning a data set, independently from where it comes from, is the first step in any analysis pipeline.
+
+
+We now had a first glimpse on our data. However, to actually understand our data more then a glimpse is neccessary. We could go through the whole data frame and read everything by just printing the whole table. However, the bigger the data the more nasty it is to do so. So we can start to visualize the data. For example we could simply look how many cases are in each group:
+
+```{r}
+esoph %>% 
+  # make a ggplot with number of cases on the x axis and the agegroups on the y axis
+  ggplot(aes(x = ncases, y = agegp)) +
+  # specify you want a dot plot
+  geom_point()
+
+esoph %>% 
+  ggplot(aes(x = ncases, y = alcgp)) +
+  geom_point()
+
+esoph %>% 
+  ggplot(aes(x = ncases, y = tobgp)) +
+  geom_point()
+
+```
+
+Exercise: What other plot types could you use to visualize the number of cases? Try them out!
+
+
+
+However, the number of cases within each group is nice to know but not really meaningful. Instead of looking at the absolute numbers we rather should look at the number of cancer diagnosis within all visited patients. For example, we could calculate the fraction of positive cases per age group, without taking alcohol or tobacco consumption into account: 
+
+```{r}
+
+esoph %>% 
+  # group by age so we calculate the relative numbers for this group only
+  group_by(agegp) %>% 
+  # calculate the fraction of positive cases among all 
+  summarize(fraction = sum(ncases)/(sum(ncontrols)+sum(ncases))) %>% 
+  # do a ggplot
+  ggplot(aes(x = agegp, y = fraction)) +
+  # make a bar plot
+  geom_bar(stat = "identity", fill = "orange") +
+  # change the general theme of the plot
+  theme_bw() +
+  # change labels
+  labs(title = "Esophageal cancer cases per age group", 
+       x = "Age groups", 
+       y = "Fraction of cancer cases") +
+  # add the rounded fractions as text layer on top of the bar plot
+  geom_text(aes(label = round(fraction, 2)))
+
+```
+
+Exercise: Reproduce this plot with the other grouping parameters!
+
+
+
+Another option to visualize the data and also to visualize several parameters at once are heatmaps. Heatmaps can be used to visualize even high dimensional data (like mRNA expression levels of different cell lines). This high dimensional data usually gets clustered in different ways (e.g. hierarchical clustering or k-means) so one can see patches of high or low data points among the different samples. However, since our data is already grouped and small we don't need to use a clustering algorithm. 
+
+```{r}
+
+esoph %>% 
+  # calculate fractions for these two groups in combination
+  group_by(agegp, alcgp) %>% 
+  summarize(fraction = sum(ncases)/(sum(ncontrols)+sum(ncases))) %>% 
+  ggplot() +
+  # make a plot out of tiles, colourcode it with the fraction
+  geom_tile(aes(x = agegp, y = alcgp, fill = fraction)) +
+  # use this colouring shema
+  scale_fill_viridis_c(option = "B") +
+  labs(title = "Fraction of esophageal cancer cases age group vs alcohol consumption", 
+       x = "Age groups", 
+       y = "Alcohol consumption") +
+  # test another theme :)
+  theme_classic()
+
+```
+
+Exercise: Plot the other grouping parameter combinations.
+
+
+We could also visualize our whole data set at once in such a heatmap: 
+
+```{r}
+esoph %>% 
+  # calculate fraction for all three grouping parameter combinations
+  group_by(agegp, tobgp, alcgp) %>% 
+  mutate(fraction = sum(ncases)/(sum(ncontrols)+sum(ncases))) %>% 
+  ggplot() +
+  geom_tile(aes(x = tobgp, y = alcgp, fill = fraction)) +
+  theme_classic() +
+  scale_fill_viridis_c(option = "B") +
+  labs(title = "Fraction of esophageal cancer cases tabacco vs alcohol consumption", 
+       x = "Tabacco consumption", 
+       y = "Alcohol consumption per day") +
+  # we're missing the age information by now. So we make one heatmap for each age group
+  facet_wrap(.~agegp)
+```
+
+According to all these visualizations, age and alcohol consumption seem to be the major risk factors in developing esophageal cancer. 
+However, we now need to test this hypothesis. 
+
+
+## Model the likelihood of developing esophageal cancer
+To test whether our hypothesis from above is valid we could create a model that predicts the likelihood to develop cancer depending on our three potential risk factors. There are many options to model. However, it generally is a good advise to chose the simplest model possible. Hence, we will use linear regression. 
+
+Above we always calculated the fraction of positive cases for each separate plot again and again, since we looked at different parameter group combinations. We will do this calculation one last time and then save the result:
+
+```{r}
+esoph %>% 
+  group_by(agegp, tobgp, alcgp) %>% 
+  mutate(fraction = sum(ncases)/(sum(ncontrols)+sum(ncases))) %>% 
+  ungroup() -> esoph
+```
+
+
+Now we can train linear models to predict the fraction. We will train our model on 3/4 of our data and use the remaining quarter as a test set of unknown data which our model aims to predict. Therefore, we will split the data set randomly. Note: Randomly splitting something means that every time it is repeated other datapoints will be selected which will slightly variate the model. However, computers cannot be "random", each randomness always is based on some reference points. We can set those reference point and thus making our model reproducable by using a seed: 
+
+```{r}
+# set seed
+set.seed(345)
+# define rows of esoph that are used for training
+Training <- sample(nrow(esoph), nrow(esoph)/3*2)
+```
+
+
+### Train the model
+Now we can train some linear models that will use some variations of our different features: 
+
+
+```{r}
+# predict fraction based on age
+model_ag <- lm(fraction ~ agegp, data = esoph[Training,])
+# predict fraction based on age and alcohol or tobacco
+model_agal <- lm(fraction ~ agegp+alcgp, data = esoph[Training,])
+model_agto <- lm(fraction ~ agegp+tobgp, data = esoph[Training,])
+# predict fraction based on age and alcohol and tabacco consumption
+model_full <- lm(fraction ~ agegp+alcgp*tobgp, data = esoph[Training,])
+
+```
+
+Feel free to try other combinations or change the formula! 
+
+
+
+
+To develop an actual Machine Learning algorithm one would not keep it that simple. One would:
+
+- train the model on several variations of the training set since every variation would change the model outcome. 
+- do some sort of cross-validation (k-fold-cross-validations) while training. 
+- use all above to select the optimal model parameters.
+- test those model parameters on new data. 
+
+For now, we will skip all steps beside the last one. But first let's have a look onto our model and how well it fits our data we trained it on. We can do that by using base R and the plot function. It will return four different plots: 
+
+```{r}
+plot(model_full)
+```
+
+*Residual vs Fitted*: Residuals are the difference between predicted values and observed values. Ideally, they should be equally and randomly distributed among 0, independent of the value. 
+
+*Normal Q-Q*: Indicates normal distribution of our residuals. If they follow a random normal distribution (given on the x axis) it would result in a diagonal line in a 45 degree angle.
+
+*Scale Location*: Similar to residual vs Fitted Plot. The values should be randomly distributed along some median without clear clusters. 
+
+*Residues vs Leverage*: Leverage describes to which extend the model parameter would change when a specific observation would be removed from the data set. If a point would fell outside of Cook's distance it would be considered as highly influential. Such points would then be removed (and troubleshooted). 
+
+
+### Test the models
+
+We do have some clusters of data points and no ideal normal distribution but the models are still fine. So, we can test them on new data.
+Since we used randomly selected rows of our data set for training we will now use all but those rows to test our models: 
+
+```{r}
+# select all rows but the Training ones
+esoph[-Training,] %>% 
+  # create new columns with the predicted values given each model
+  add_column(age = predict(model_ag, esoph[-Training,]), 
+             agal = predict(model_agal, esoph[-Training,]), 
+             agto = predict(model_agto, esoph[-Training,]), 
+             full = predict(model_full, esoph[-Training,])) -> Predictions
+
+
+
+```
+
+```{r}
+Predictions %>% 
+  # create a long tibble with all predictions in one column and all different model types in another column
+  pivot_longer(age:full, names_to="model_vars", values_to = "prediction") %>% 
+  # group by each model 
+  group_by(model_vars) %>% 
+  # calculate different types of correlation between predicted and actual data
+  mutate(pearson.c = cor.test(fraction, prediction, method = "pearson")$estimate, 
+         pearson.p =  cor.test(fraction, prediction, method = "pearson")$p.value, 
+         spearman.c = cor.test(fraction, prediction, method = "spearman")$estimate, 
+         spearman.p = cor.test(fraction, prediction, method = "spearman")$p.value) %>% 
+  ggplot(aes(x = fraction, y = prediction)) +
+  # add a diagonale line into our plot
+  geom_abline(slope = 1, intercept = 0, color = "red") +
+  # plot our data (fractions vs predictions)
+  geom_point() +
+  # add a smoothed fit line through the poibts
+  geom_smooth() +
+  # add the information about the correlations
+  geom_text(aes(label = paste("PC =", round(pearson.c, 2), "/ p = ", round(pearson.p, 2), "; SC = ", round(spearman.c, 2), "/ p = ", round(spearman.p, 2), sep = " "), 
+                x = .5, y = 1), check_overlap = TRUE) +
+  # define a theme
+  theme_bw() +
+  # make one plot per model type
+  facet_wrap(.~model_vars)
+```
+
+Indeed, alcohol consumption and age massively influence our prediction accuracy. 
+
+
+
+### Is our model actually predicting something?
+
+However, we still should make sure that our models aren't just predicting noise or randomness. Therefore, a good option is to compare the actual model with a random one. The easiest way to achieve such a comparison is by creating other models were the connection between observations and features is lost: 
+
+```{r}
+# sample the fractions randomly so they are not connected with the group parameters anymore
+esoph$rn_frac <- sample(esoph$fraction)
+```
+
+Now, create the same models as above but with our random shuffled fractions: 
+
+```{r}
+rn_model_ag <- lm(rn_frac ~ agegp, data = esoph[Training,])
+rn_model_agal <- lm(rn_frac ~ agegp+alcgp, data = esoph[Training,])
+rn_model_agto <- lm(rn_frac ~ agegp+tobgp, data = esoph[Training,])
+rn_model_full <- lm(rn_frac ~ agegp+alcgp*tobgp, data = esoph[Training,])
+
+```
+
+
+Compare the model fits: 
+
+```{r}
+plot(rn_model_full)
+```
+
+The residuals are larger but generally these plots don't look that different or worse compared to the actual model. So is it just random? 
+
+Let's use the new random models to predict the data: 
+
+```{r}
+esoph[-Training,] %>% 
+  add_column(age = predict(rn_model_ag, esoph[-Training,]), 
+             agal = predict(rn_model_agal, esoph[-Training,]), 
+             agto = predict(rn_model_agto, esoph[-Training,]), 
+             full = predict(rn_model_full, esoph[-Training,])) -> Randoms
+```
+
+
+And now join the this random predictions with the actual predictions: 
+
+```{r}
+Predictions %>% 
+  pivot_longer(age:full, names_to="model_vars", values_to = "prediction",) %>%
+  left_join(Randoms %>% 
+              select(-rn_frac) %>% 
+              pivot_longer(age:full, names_to = "model_vars", 
+                           values_to = "random_prediction")) -> Preds_Rnds
+
+```
+
+And now plot them altogether: 
+
+```{r}
+Preds_Rnds %>% 
+    group_by(model_vars) %>% 
+    mutate(pearson.c = cor.test(fraction, prediction, method = "pearson")$estimate, 
+           pearson.p =  cor.test(fraction, prediction, method = "pearson")$p.value, 
+           spearman.c = cor.test(fraction, prediction, method = "spearman")$estimate, 
+           spearman.p = cor.test(fraction, prediction, method = "spearman")$p.value, 
+           rn_pearson.c = cor.test(fraction, random_prediction, method = "pearson")$estimate, 
+           rn_pearson.p = cor.test(fraction, random_prediction, method = "pearson")$p.value, 
+           rn_spearman.c = cor.test(fraction, random_prediction, method = "spearman")$estimate, 
+           rn_spearman.p = cor.test(fraction, random_prediction, method = "spearman")$p.value, )  %>% 
+  ggplot(aes(x = fraction, y = prediction)) +
+  geom_abline(slope = 1, intercept = 0, color = "red") +
+  geom_point() +
+  geom_smooth() +
+  geom_text(aes(label = paste("PC =", round(pearson.c, 2), "/ p = ", round(pearson.p, 2), "; SC = ", round(spearman.c, 2), "/ p = ", round(spearman.p, 2), sep = " "), 
+                x = .5, y = 1), check_overlap = TRUE) +
+  geom_point(aes(y = random_prediction), color = "grey") +
+  geom_text(aes(label = paste("PC =", round(rn_pearson.c, 2), "/ p = ", round(rn_pearson.p, 2), "; SC = ", round(rn_spearman.c, 2), "/ p = ", round(rn_spearman.p, 2), sep = " "), 
+                x = .5, y = .2), check_overlap = TRUE) +
+  theme_bw() +
+  facet_wrap(.~model_vars)
+```
+
+Yes! Our mnodels (all of them) are better then our random model. But which of them is most accurate? Do we need the full model or are age and alcohol consumption sufficient to explain everything? Remember: Keep the model as simple as possible! 
+Plus, even if we see that the correlations between real and random model predictions are quite different and the correlations of each actual model are significantly different from a random distribution (not our random models!), are our models actually significantly different from the random models and from each other? 
+
+
+### Hypothesis tests
+
+Do answer these question we need to do hypothesis tests or analyse tests that have already been done while training the model, respectively. Generally, all these tests ask whether data points are equal (Null-Hypothesis) or not (Alternative-Hypothesis). Each test calculates a test statistic parameter based on sample size and certain criteria (different for each test). The test statistic corresponds to a certain probability that our Null-Hypothesis (data is equal) is true. A threshold of 5 % (p <= 0.05) is often used to reject the Null-Hypothesis and thus state, that one data set is significantly different from another one. 
+
+There is a variety of tests that we can use to analyse data for significant difference. Different types of distributions require different types of tests. In our case we are mainly interested in:
+
+- Correlation tests 
+- Hypothesis tests 
+
+
+We already did a correlation test on all our models. We calculated Pearson and Spearman Correlations of our predictions and also looked onto the corresponding p-values. So, now we need to do Hypothesis Tests.
+
+
+![Flowchart to follow to select a hypothesis test from [Methodenberatung UZH   ](https://www.methodenberatung.uzh.ch/de/datenanalyse_spss/unterschiede/zentral.html).](https://www.methodenberatung.uzh.ch/static/entscheidbaum/baumzentral.jpg)
+
+
+| Name | Condition to match | What they test for |
+|---|---|---|
+| Parametric   tests |  | Test the actual values |
+| (paired) T-Test^[Student. (1908). The   Probable Error of a Mean. Biometrika. https://doi.org/10.2307/2331554] | Normally distributed | Difference of means of two distributions |
+| ANOVA | Normally distributed, independent data | Difference of means of two or more distributions  |
+| Non-parametric   tests |  | Test the ranks of values |
+| Mann-Whitney-U-Test^[H. B. Mann, D. R.   Whitney (1947): On a Test of Whether one of Two Random Variables is   Stochastically Larger than the Other. Ann. Math. Statist. doi:   10.1214/aoms/1177730491] | Alternative to t-test if no normal distribution | Difference of sum of the ranks of the datapoints |
+| Wilcox-Test^[Wilcoxon,   F. (1945): Individual Comparisons by Ranking Methods. Biometrics Bulletin,   1(6), 80–83. https://doi.org/10.2307/3001968] | Alternative to paired t-test if no normal distribution | Difference of the sum of ranks of the difference between the data points |
+| Kruskal-Wallis H Test^[W. H. Kruskal, W.   A. Wallis (1952): Use of ranks in one-criterion variance analysis.Journal of   the American Statistical Association, doi:10.1080/01621459.1952.10483441] | Alternative to ANOVA if no normal distribution | Difference of sum of the ranks of the datapoints |
+| Friedman-Test^[Friedman, M (1937): The   Use of Ranks to Avoid the Assumption of Normality Implicit in the Analysis of   Variance. Journal of the American Statistical Association.   doi:10.1080/01621459.1937.10503522; Korrektur in: A Correction: The Use of   Ranks to Avoid the Assumption of Normality Implicit in the Analysis of   Variance. 34(205)/1939, S. 109, doi:10.1080/01621459.1939.10502372.] | Alternative to Kruskal-Wallis-Test if distributions are *not* independent | Difference of sum of the ranks of the datapoints |
+
+
+See [Methodenberatung UZH](https://www.methodenberatung.uzh.ch/de/datenanalyse_spss/unterschiede/zentral.html) for a more detailed overview. 
+
+
+
+
+
+#### Which parameters have significant more influence on the model? 
+
+Based on our prediction accuracies we already got the impression that increasing age and alcohol consumption have the strongest impact on developing esophageal cancer. We can check that by looking onto the model itself. First, let's look at the summary of our full model: 
+
+```{r}
+summary(model_full)
+```
+
+Since our model was trained on categorical variables each category (e.g. the different age groups) counts as a different parameter that can have another intercept. To get a summary of which feature (e.g. age generally is important) we can perform an ANOVA of all intercepts. This will then answer the question which features explained most of the variance in our data: 
+
+
+```{r}
+
+
+anova(model_full)
+```
+
+
+As we already expected, the main parameters in our model are age and alcohol consumption. Thus, the risk to get esophageal cancer increases with age and amount of consumed alcohol.
+
+
+
+#### Random vs actual model
+
+Now, let's check the quality of our model predictions. 
+
+Since our data is not normally distributed, we will use non-parametric tests. We will use the U-Test to check whether random and actual model predictions are different and then extend the U-Test to check whether there is a significant increase in prediction accuracy when using more parameters in our model.
+
+
+Let's start by comparing random and actual models:
+
+```{r}
+
+# our table containing predicted fractions and random based predicted fractions
+Preds_Rnds %>% 
+  # for each model
+  group_by(model_vars) %>% 
+  # do a u-test and put the p.value in our table
+  summarise(u_test_p.value = wilcox.test(prediction, random_prediction, paired = FALSE)$p.value) %>% 
+  # since we did multiple tests we need to correct for multiple testing 
+  mutate(u_test_p.value.adjust = p.adjust(u_test_p.value, method = "bonferroni"))
+```
+
+
+None of these p-values are lower than the usual p-value cutoff (p <= 0.05). Why? 
+
+
+
+Here, we run into a problem since there are many values around both ends of our distribution (0 and 1) which makes it difficult to do any hypothesis test. 
+However we could still argue that our age-alcohol model and our full model are more likely to be different from the random models than the other two options which corresponds to our correlation analysis. 
+
+#### Comparison of all actual models
+
+Next, let's compare the actual models among each other. There are two ways to do this: Test all models individually against each other and get a significance indicator for each model separately (U-Test with multiple testing adjusting) or test all together (Kruskal-Wallis). 
+
+Since the analysis was not sufficient for the comparison of random vs real models we would not expect any significant results here. Still, let's try. 
+
+To begin with we do a Kruskal-Wallis-Test:
+
+
+```{r}
+kruskal.test(Preds_Rnds$prediction~Preds_Rnds$model_vars)
+
+```
+
+According to this, no model is significantly better than all the others. 
+
+
+Another option would be, to perform multiple U-Tests comparing all the models amongst each other.
+
+
+```{r}
+# write function that performs test on some variables
+multi.test <- function(dist1, dist2, dt){
+  
+  dt %>% 
+    summarise(p.value = wilcox.test(unlist(.[, dist1]), unlist(.[, dist2]), paired = FALSE)$p.value, 
+              test.stat = wilcox.test(unlist(.[, dist1]), unlist(.[, dist2]), paired = FALSE)$statistic) -> test
+  
+  return(test)
+    
+}
+
+
+
+# create named vector of column names of interest
+Distributions <- c("age", "agal", "agto", "full")
+names(Distributions) <- Distributions
+
+
+# loop / apply multi.test through whole data frame
+lapply(Distributions, function(dist1){
+  lapply(Distributions[which(Distributions != dist1)], function(dist2, dt){
+    multi.test(dist1, dist2, dt) %>% 
+      # add column so we later know which distributions were compared with each other
+      add_column(comparison = paste(dist1, " vs ", dist2, sep = ""), 
+                 # add another column to later filter for unique columns
+                 filter = paste(sort(c(dist1, dist2)), collapse = "_")) -> test
+    return(test)
+  }, Predictions) %>% 
+    # output of lapply is a list, we want a table -> bind_rows()
+    bind_rows()
+}) %>%
+  # same
+  bind_rows() %>% 
+  # filter table for unique values in filter so we have each result once
+  distinct(filter, .keep_all = TRUE) %>% 
+  # do multiple testing correction 
+  mutate(p.value.adjust = p.adjust(p.value, method = "bonferroni"))
+  
+
+```
+
+Again, none of our tests is significant. Still, the correlation test clearly showed an increasing correlations between predicted probabilities and real probabilities as soon as the alcohol consumption was taken into account. Also, the correlation coefficients for the full model and the one only based on age and alcohol consumption were pretty high. Additionally, the ANOVA of our linear model including all features showed that alcohol consumption and age groups explained significantly more variance as the tobacco consumption.
+Altogether it indicates that a linear model based on age groups and alcohol consumption already is sufficient to predict the probability of developing esophageal cancer. 
+
+
+
+## Final notes
+
+Final notes: 
+
+
+1. Correlation is not causation! The most famous example is the one with storks and babies. Always keep in mind what data you are working with and whether what your analysis tells you makes sense. 
+
+2. Know how to interpret models. Based on our given data set we could also argue that getting cancer increases the alcohol consumption. Maybe as a painkiller... 
+
+3. Keep your model as easy as possible, especially if you want to interpret it. 
+
+
+
+
+
+
+
+
+# References
