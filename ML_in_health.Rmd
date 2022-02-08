@@ -19,16 +19,16 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, error = TRU
 
 # Short introduction into R
 ## General
-R ([download here](https://www.r-project.org/)) is a open source environment for statistical programming which is mainly used for data analysis (including data cleaning- and arranging, calculations, statistics, machine learning and plotting). It is running on all systems and can either be used in the console or via an graphical interface called R Studio [download here](https://www.rstudio.com/products/rstudio/). Feel free to download and install both of it and copy and paste the code blocks within this script into R/R Studio to follow each step.
+R ([download here](https://www.r-project.org/)) is an open source environment for statistical programming which is mainly used for data analysis (including data cleaning and arranging, calculations, statistics, machine learning and plotting). It is running on all systems and can either be used in the console or via a graphical interface called R Studio ([download here](https://www.rstudio.com/products/rstudio/)). Feel free to download and install both and copy and paste the code blocks within this script into R/R Studio to follow each step.
 
 
 Since this is no "introduction into R" workshop we will just give a few examples on how to use R in general. If you are interested in learning more about data analysis (with R or other programming languages) we can recommend [DataCamp courses](https://www.datacamp.com/) or using free, virtual books found on the the [R Studio Website](https://www.rstudio.com/resources/books/). 
 
 
-To start with, there are a few differences between R and many other programming languages one should know when starting:
+To start with, there are a few differences between R and many other programming languages one should know:
 
 - R starts counting at 1 and not 0.
-- assigning variables is usually done by an arrow `->` in either direction (pointing to the variable name), the equal sign `=` is usually used to define parameters in functions.
+- assigning variables is usually done by an arrow `->` in either direction (pointing to the variable name), the equal sign `=` is mainly used to define parameters in functions.
 - R is case sensitive.
 
 
@@ -53,13 +53,13 @@ a <- 5 + 10
 b <- 3 * 2
 ```
 
-And then calculate something using these variable: 
+And calculate something using these variables: 
 ```{r}
 (a+b)^2*a
 ```
 
 
-You can also ask for logical responses, e.g. when comparing numerical values. A `TRUE`can also be seen as a `1` and a `FALSE` as `0`.  Notice that "is equal to" is asked for using `==` and "is not equal to" using `!=`:
+You can also ask for logical responses, e.g. when comparing numerical values. Thereby, a `TRUE` can also be seen as a `1` and a `FALSE` as `0`.  Notice that "is equal to" is asked for using `==` and "is not equal to" using `!=`:
 
 ```{r}
 5 > 3
@@ -69,14 +69,14 @@ You can also ask for logical responses, e.g. when comparing numerical values. A 
 ```
 
 
-R can not only work with numerical (or logical) values but also with character values or strings: 
+R can not only work with numerical (or logical) values but also with character values (strings): 
 
 ```{r}
 x <- "Machine Learning"
 y <- "in Health"
 ```
 
-You cannot do calculations with mathematical operators on strings. Running e.g. `x+y` will return an error message. However, you can ask logical questions:
+You can not do calculations with mathematical operators on strings. Running e.g. `x+y` will return an error message. However, you can ask logical questions:
 ```{r}
 x != y 
 x == y
@@ -95,7 +95,7 @@ You can create these containers by using functions. Functions are implemented (o
 ```{r}
 paste(x, y, sep = " ")
 ```
-You can also write your own functions (see corresponding chapter). 
+You can also write your own functions (see chapter 1.4). 
 But for now, let's head back to the data containers: 
 
 

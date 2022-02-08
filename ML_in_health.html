@@ -251,12 +251,12 @@ div.tocify {
 <h1 number="1"><span class="header-section-number">1</span> Short introduction into R</h1>
 <div id="general" class="section level2" number="1.1">
 <h2 number="1.1"><span class="header-section-number">1.1</span> General</h2>
-<p>R (<a href="https://www.r-project.org/">download here</a>) is a open source environment for statistical programming which is mainly used for data analysis (including data cleaning- and arranging, calculations, statistics, machine learning and plotting). It is running on all systems and can either be used in the console or via an graphical interface called R Studio <a href="https://www.rstudio.com/products/rstudio/">download here</a>. Feel free to download and install both of it and copy and paste the code blocks within this script into R/R Studio to follow each step.</p>
+<p>R (<a href="https://www.r-project.org/">download here</a>) is an open source environment for statistical programming which is mainly used for data analysis (including data cleaning and arranging, calculations, statistics, machine learning and plotting). It is running on all systems and can either be used in the console or via a graphical interface called R Studio (<a href="https://www.rstudio.com/products/rstudio/">download here</a>). Feel free to download and install both and copy and paste the code blocks within this script into R/R Studio to follow each step.</p>
 <p>Since this is no “introduction into R” workshop we will just give a few examples on how to use R in general. If you are interested in learning more about data analysis (with R or other programming languages) we can recommend <a href="https://www.datacamp.com/">DataCamp courses</a> or using free, virtual books found on the the <a href="https://www.rstudio.com/resources/books/">R Studio Website</a>.</p>
-<p>To start with, there are a few differences between R and many other programming languages one should know when starting:</p>
+<p>To start with, there are a few differences between R and many other programming languages one should know:</p>
 <ul>
 <li>R starts counting at 1 and not 0.</li>
-<li>assigning variables is usually done by an arrow <code>-&gt;</code> in either direction (pointing to the variable name), the equal sign <code>=</code> is usually used to define parameters in functions.</li>
+<li>assigning variables is usually done by an arrow <code>-&gt;</code> in either direction (pointing to the variable name), the equal sign <code>=</code> is mainly used to define parameters in functions.</li>
 <li>R is case sensitive.</li>
 </ul>
 </div>
@@ -277,10 +277,10 @@ div.tocify {
 <p>You can then assign the results of your calculations to variables:</p>
 <pre class="r"><code>a &lt;- 5 + 10 
 b &lt;- 3 * 2</code></pre>
-<p>And then calculate something using these variable:</p>
+<p>And calculate something using these variables:</p>
 <pre class="r"><code>(a+b)^2*a</code></pre>
 <pre><code>## [1] 6615</code></pre>
-<p>You can also ask for logical responses, e.g. when comparing numerical values. A <code>TRUE</code>can also be seen as a <code>1</code> and a <code>FALSE</code> as <code>0</code>. Notice that “is equal to” is asked for using <code>==</code> and “is not equal to” using <code>!=</code>:</p>
+<p>You can also ask for logical responses, e.g. when comparing numerical values. Thereby, a <code>TRUE</code> can also be seen as a <code>1</code> and a <code>FALSE</code> as <code>0</code>. Notice that “is equal to” is asked for using <code>==</code> and “is not equal to” using <code>!=</code>:</p>
 <pre class="r"><code>5 &gt; 3</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>5 &lt; 3</code></pre>
@@ -289,10 +289,10 @@ b &lt;- 3 * 2</code></pre>
 <pre><code>## [1] FALSE</code></pre>
 <pre class="r"><code>5 != 2</code></pre>
 <pre><code>## [1] TRUE</code></pre>
-<p>R can not only work with numerical (or logical) values but also with character values or strings:</p>
+<p>R can not only work with numerical (or logical) values but also with character values (strings):</p>
 <pre class="r"><code>x &lt;- &quot;Machine Learning&quot;
 y &lt;- &quot;in Health&quot;</code></pre>
-<p>You cannot do calculations with mathematical operators on strings. Running e.g. <code>x+y</code> will return an error message. However, you can ask logical questions:</p>
+<p>You can not do calculations with mathematical operators on strings. Running e.g. <code>x+y</code> will return an error message. However, you can ask logical questions:</p>
 <pre class="r"><code>x != y </code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>x == y</code></pre>
@@ -310,7 +310,7 @@ y &lt;- &quot;in Health&quot;</code></pre>
 <p>You can create these containers by using functions. Functions are implemented (or self written) wrappers to perform certain actions. For example the function <code>paste()</code> will paste variables together:</p>
 <pre class="r"><code>paste(x, y, sep = &quot; &quot;)</code></pre>
 <pre><code>## [1] &quot;Machine Learning in Health&quot;</code></pre>
-<p>You can also write your own functions (see corresponding chapter). But for now, let’s head back to the data containers:</p>
+<p>You can also write your own functions (see chapter 1.4). But for now, let’s head back to the data containers:</p>
 <div id="vectors" class="section level3" number="1.3.1">
 <h3 number="1.3.1"><span class="header-section-number">1.3.1</span> Vectors</h3>
 <p>Vectors are one dimensional data containers that can only contain data of one type, for example numeric values. They are created using the function <code>c()</code>:</p>
@@ -575,7 +575,7 @@ rm(list = ls())
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb) max used  (Mb)
 ## Ncells 1123457 60.0    2130384 113.8  2130384 113.8
-## Vcells 1912185 14.6    8388608  64.0  3237949  24.8</code></pre>
+## Vcells 1912176 14.6    8388608  64.0  3237940  24.8</code></pre>
 <p>Note: Emptying the environment just trashes objects and frees RAM. Librarys are still active, so we do not need to load <em>tidyverse</em> again. Emptying the environment is strongly suggested whenever switching from one project to another to avoid using the wrong, already existing variables in the new project. Sometimes, it also is advisable to detach packages. This is done by the function <code>detach()</code>.</p>
 </div>
 <div id="load-the-data" class="section level2" number="2.3">
