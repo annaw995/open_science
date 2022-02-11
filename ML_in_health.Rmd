@@ -69,14 +69,14 @@ You can also ask for logical responses, e.g. when comparing numerical values. Th
 ```
 
 
-R can not only work with numerical (or logical) values but also with character values (strings): 
+R can not only work with numerical (or logical) values but also with character values (also called strings): 
 
 ```{r}
 x <- "Machine Learning"
 y <- "in Health"
 ```
 
-You can not do calculations with mathematical operators on strings. Running e.g. `x+y` will return an error message. However, you can ask logical questions:
+You can not do mathematical calculations on strings. Running e.g. `x+y` will return an error message. However, you can ask whether one string is equal or not to another and recieve a logical response:
 ```{r}
 x != y 
 x == y
@@ -95,19 +95,22 @@ You can create these containers by using functions. Functions are implemented (o
 ```{r}
 paste(x, y, sep = " ")
 ```
+
+
 You can also write your own functions (see chapter 1.4). 
 But for now, let's head back to the data containers: 
 
 
 ### Vectors
-Vectors are one dimensional data containers that can only contain data of one type, for example numeric values. They are created using the function `c()`:
+Vectors are one-dimensional data containers that can only contain data of one type, for example numeric values. They are created using the function `c()`:
 
 ```{r}
 myvec <- c(1, 2, 2.3, 1.1, 6, 1) #assign a vector to a variable
 myvec # prints the given variable
 ```
 
-You can select specific elements in this vector by specifying the index or several indices. Indices of vectors (and all other data containers) are defined in squared brackets `[]`.
+You can select specific elements in this vector by specifying the index of this element within the vector. It is also possible to select several elements at once using a vector of indices. Indices of vectors (and all other data containers) are defined in squared brackets `[]`. Important note: Counting in R starts with 1, not with 0 as in many other programming languages. The first element in any data container has the index of 1. 
+
 ```{r}
 myvec[3] # selects the third element in myvec
 myvec[c(1,3)] # selects the first and the third element in vev
@@ -121,18 +124,19 @@ You can also figure out whether a specific element is in a vector:
 ```
 
 
-You could also use a logical vector as returned by the last line of code to filter your initial vector: 
+And then e.g. use the logical vector returned by e.g. `1 == myvec` to filter your data: 
 ```{r}
 myvec[1==myvec] # filter myvec for all values that are 1
 myvec[myvec > 2] # filter myvec for all values that are > 2
 ```
-Or you could ask for the positions within myvec where myvec is 1 using the following function: 
+
+You can also ask for the indices where `myvec` is 1 using the following function: 
 ```{r}
 which(myvec==1)
 ```
 
 ### Matrices
-Matrices are two dimensional data containers that can only contain data of one type. They are created out of vectors using the function `matrix()`. One could also convert another data type (e.g. data frames) to a matrix using `as.matrix()`.
+Matrices are two-dimensional data containers that can only contain data of one type. They are created out of vectors using the function `matrix()`. Other data types, e.g. data frames, can also be converted to matrices using the function `as.matrix()`.
 
 
 ```{r}
@@ -148,7 +152,7 @@ mymatrix # prints the matrix
 ```
 
 One can select single elements, rows or columns of a matrix similar to selecting elements in a vector using the indices: `mymatrix[rows, columns]`.
-Not that the selection of a single row/column will return a vector. 
+Note that the selection of a single row/column will return a vector. 
 
 ```{r}
 mymatrix <- matrix(myvec, ncol = 2, dimnames = list(c("A", "B", "D"), c("X", "Y")))
@@ -162,7 +166,7 @@ mymatrix["A",] # selects row named "A"
 ```
 
 ### Data frames
-Data frames also are two dimensional data containers. Unlike matrices each column can contain a different type of data. They are created using `data.frame()`. One can also convert into data frames by using the function `as.data.frame()`: 
+Data frames also are two-dimensional data containers. Unlike in matrices each column can contain a different type of data. They are created out of vectors using `data.frame()`. One can also convert e.g. a matrix into data frames by using the function `as.data.frame()`: 
 
 ```{r}
 mydf <- data.frame("age" = c(22, 16, 17, 12, 14), 
@@ -172,7 +176,9 @@ mydf <- data.frame("age" = c(22, 16, 17, 12, 14),
 mydf
 
 ```
-Similar to matrices one could also name the rows: 
+
+
+Just like matrices, rows can be named as follows:
 ```{r}
 rownames(mydf) <- LETTERS[1:5] # sets rownames of mydf using the in-build vector LETTERS
 # one could also rename the columns using the similar function colnames()
@@ -180,7 +186,7 @@ rownames(mydf) <- LETTERS[1:5] # sets rownames of mydf using the in-build vector
 mydf
 ```
 
-The functions `rownames()` and `colnames()` can be used to set the corresponding names in every data type that has rows and columns (including data types that are not from base R). Vectors and lists can also contain named elements. Here one needs to use the function `names()`.
+The functions `rownames()` and `colnames()` can be used to set the corresponding names in every data type that has rows and columns (including data types that are not from base R). Vectors and lists can also contain named elements. In this case you would use the function `names()`.
 
 Elements in a data frame can be accessed the same way as elements in matrices, using either the indices or the row and column names. However, there is one additional way to access columns of data frames using the `$`:
 
@@ -194,15 +200,16 @@ mydf[,"age"]
 
 
 ### Lists
-Lists are literal containers where one can store any object: single variables, Vectors, matrices, data frames, other lists, tibbles, ...
-Lists are created by using the function `list()`.
+Lists are literal containers that can store any object: single variables, Vectors, matrices, data frames, other lists, tibbles, ...
+They are created by using the function `list()`:
 
 ```{r}
 mylist <- list("vector" = myvec, "matrix" = mymatrix, "dataframe" = mydf) # create a list with named elements
 # renaming or naming afterwards is possible using the function names()
 ```
 
- Elements in lists can be accessed using the index but usually using double square brackets `mylist[[index/name_of_list_element]]` or the `$`: 
+
+Elements in lists can be accessed using the index. Using single square bracktes like for vectors will return a sublist. To directly access an element in the list double square brackets `mylist[[index/name_of_list_element]]` or the `$` are used: 
 ```{r}
 mylist[[2]] # select the second element in mylist
 mylist[["matrix"]] # select the element named "matrix"
@@ -214,10 +221,11 @@ mylist[2]
 ```
  
 ## Functions
-Right now we used several in-build functions. Since R is a mostly a function-based language (not object-based) all tasks are done by calling a function and giving parameters to this function. Basic R comes with hundreds of functions to perform calculations, plotting, .... Packages further expand the amount of functions to perform tasks easier. Often, functions called in R rely on other programming languages like C#, Python or Pearl. 
-Anyways, functions are wrappers to perform more complex actions within one line to minimize the amount of copy & paste errors and lines of code. Hence, it is useful to also know how to write own functions. 
+Previously, we used several in-build functions. Since R is a mostly function-based language (not object-based), all tasks are done by calling a function and giving parameters to this function. Basic R comes with hundreds of functions to perform calculations, plotting or other tasks. Packages further expand the amount of functions to perform tasks easier. Often, functions called in R rely on other programming languages like C#, Python or Pearl. 
 
-So, lets create an exemplary function that calculates the mean, standard deviation and median of a series of numbers and also introduce conditions: 
+All in all, functions are wrappers to perform more complex actions within one line to minimize the amount of copy & paste errors and lines of code. Hence, it is useful to also know how to write your own functions. 
+
+So, lets create an exemplary function that calculates the mean, standard deviation and median of a series of numbers and also introduce conditions in which the function will do one thing and not the other: 
 
 ```{r}
 # summarize.numerics is the name of the function
@@ -256,22 +264,22 @@ summarize.numerics(data = mydf$age, calc.mean = " ")
 
 
 ## Famous last words regarding programming
-There is much more to say and learn about R. However, the initial topic of our workshop is machine learning in health so the upper part really was just meant to give you a small introduction into R and how it works in case you thumble over R again (if you stay in science you most likely will at some point). Also, it might be helpful to understand the things we did in the workshop and are written in the following part. 
+There is much more to say and learn about R. However, the initial topic of our workshop is machine learning in health so the above part really was only meant to give you a small introduction into R and how it works in case you stumble over R again (if you stay in science you most likely will at some point). Also, it might be helpful to understand the things we did in the workshop and that are written in the following part. 
 
 Finally, there are some general advises regarding any type of programming as well as R specific: 
 
-- Don't be afraid of searching for functions / how to's in the internet. The R community is pretty helpful and many questions might have been already asked (Especially [Stackoverflow](https://stackoverflow.com/) always is a good option). Also, most functions, packages, ... are well documented.
+- Don't be afraid of searching for functions / how to's on the internet. The R community is pretty helpful and many questions might have been already asked (Especially looking at [Stackoverflow](https://stackoverflow.com/) always is a good option). Also, most functions and packages are well documented.
 - If you type a `?` in front of a function you don't understand or remember that well the documentation of this function will be opened in R Studio.
 - Always comment your code so you can still understand what you did a few years later. Comments are explanarory lines of code that are not processed. In R, comments are written with a `#` in front.
 
 
 # Machine Learning in Health
 Machine Learning is a type of artificial intelligence that uses data to automatically predict the outcome of new, unknown data. 
-For example, one could train a model that predicts the survival rate of lung cancer patients. Exemplary, such a model could use genomic information: which genes are mutated. The machine learning algorithm would basically calculate the correlation between the different mutations (so-called features) and the overall-survival. Each feature in the end would have a parameter that defines its influence onto the survival. This model could then be used to predict the survival chances of new lung cancer patients given their mutation status or to identify the features (mutations) that are most important and thus potential drug targets.
+For example, you can train a model that predicts the survival rate of lung cancer patients. Exemplary, such a model could use genomic information, e.g. which genes are mutated. The machine learning algorithm would basically calculate the correlation between the different mutations (so-called features) and the overall-survival. Each feature in the end would have a parameter that defines its influence onto the survival. This model can then be used to predict the survival chances of new lung cancer patients given their mutation status or to identify the features (mutations) that are most important and thus potential drug targets.
 
 
 
-There are many different types of machine learning algorithms as well as many different cases where they are used. The type of machine learning favored to explain a matter depends on the type of data (categorical / numeric), the amount of data and features and the overall goal (explainable model for research purposes / performance). In health, machine learning is for example used for
+There are many different types of machine learning algorithms as well as many different cases where they are used. The type of machine learning favored to explain a matter depends on the type of data (categorical / numeric), the amount of data and features (many, unnecessary features increase the noise and thus worsen your model) and the overall goal (explainable model for research purposes or only the performance). In health, machine learning is for example used for:
 
 - analysis of clinical trial data or general clinical research.
 - personalized medicine (which drug would be the best treatment for a certain patient?).
@@ -288,7 +296,8 @@ There are many different types of machine learning algorithms as well as many di
 The following part will contain most of the code we did run during the workshop. You should be able to perform every code chunk in your own R environment. 
 
 
-Generally, R is able to read in all types of data that can be downloaded from anywhere. You could for example load in any types of tables (.csv, .tsv, .xlxs, .txt, ...), plain text files or even images. For the sake of simplicity you do not need to manually download data from mostly not user friendly databases. Instead, we will use an [esophageal cancer data set](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/esoph.html)^[Breslow, N. E. and Day, N. E. (1980) Statistical Methods in Cancer Research. Volume 1: The Analysis of Case-Control Studies. IARC Lyon / Oxford University Press.] that is accessible after installing R.
+Generally, R is able to read in all types of data that can be downloaded from anywhere. You can for example load in any types of tables (.csv, .tsv, .xlxs, .txt, ...), plain text files or even images. For the sake of simplicity you do not need to manually download data. (Most databases sadly are not very user friendly. So keep that in mind when you search for usable data.) 
+Instead, we will use an [esophageal cancer data set](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/esoph.html)^[Breslow, N. E. and Day, N. E. (1980) Statistical Methods in Cancer Research. Volume 1: The Analysis of Case-Control Studies. IARC Lyon / Oxford University Press.] that is accessible after installing R.
 Additionally we will use the [*tidyverse*](https://www.tidyverse.org/packages/)^[Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, https://doi.org/10.21105/joss.01686] package.
 
 ### Install / load packages
@@ -303,7 +312,7 @@ library(tidyverse) # loads the package into your R environment
 
 ### Package explanation
 
-*tidyverse* is a bundle of smaller packages used for easy-to-read code, data rearranging, data cleaning and data plotting. Everything done with tidyverse functions can also be done in base R. However, using base R for rearraning and plotting data can be more complex compared to using a package developed for that purpose. Using *tidyverse* and especially the sub-package *magrittr* introduces a new way of writing code, known as 'piping'. To pipe one function into another one uses the pipe symbol: `%>%` (Shortcut: Ctrl+Shift+M). Piping avoids nested functions or saving any step done on data to a variable to keep it readable.
+*tidyverse* is a bundle of smaller packages used for easy-to-read code, data rearranging, data cleaning and data plotting. Everything done with tidyverse functions can also be done in base R. However, using base R for rearranging and plotting data can be more complex compared to using a package developed for that purpose. Using *tidyverse* and especially the sub-package *magrittr* introduces a new way of writing code, known as 'piping'. To pipe one function into another one uses the pipe symbol: `%>%` (Shortcut: Ctrl+Shift+M). Piping avoids nested functions or saving any step done on data to a variable to keep it readable.
 The sub-package *tibbles* introduces another data format known as 'tibbles'. Tibbles basically are data frames that cannot have row names but do offer a few advantages. Printing any tibble will only show the first 10 rows and subsetting them is clearer than data frames. 
 
 For example, we can convert our data frame `mydf` into a tibble and then perform several actions on them: 
@@ -354,7 +363,7 @@ Note: Emptying the environment just trashes objects and frees RAM. Librarys are 
 
 
 ## Load the data
-R comes with several data sets that are based on actual, real life data. Some of those data sets come with installing of specific packages, others are part of the base R installation (and the package *datasets* that comes with it). You can find a list of pre-loaded data using the function `data()` without any parameters. 
+R comes with several data sets that are based on actual, real life data. Some of those data sets come with the installation of specific packages, others are part of the base R installation (and the package *datasets* that comes with it). You can find a list of pre-loaded data using the function `data()` without any parameters. 
 
 To access the data and load it into our R environment we need to use the function above and specify which data set we want to load. For now it is the data set "esoph".
 
@@ -364,7 +373,7 @@ data("esoph")
 
 
 ## Data exploration
-The first step in any type of data analysis is to understand your data. Base R already comes with some useful functions to get an overview. With tidyverse things get even easier. 
+The first step in any type of data analysis is to understand your data. Base R already comes with some useful functions to get an overview. With *tidyverse* things get even easier. 
 
 First, lets have a look on the type of data that we have:
 
@@ -406,7 +415,7 @@ Especially using the `summary()` function is pretty useful since it would also p
 The esoph data set is already cleared up and hence is not containing any weird data. Still, cleaning a data set, independently from where it comes from, is the first step in any analysis pipeline.
 
 
-We now had a first glimpse on our data. However, to actually understand our data more then a glimpse is neccessary. We could go through the whole data frame and read everything by just printing the whole table. However, the bigger the data the more nasty it is to do so. So we can start to visualize the data. For example we could simply look how many cases are in each group:
+We now had a first glimpse on our data. However, to actually understand our data more than a glimpse is neccessary. We could go through the whole data frame and read everything by just printing the whole table. However, the bigger the data the nastier it is to do so. Instead of looking on our table of data we can start to visualize it. For example we could simply look how many cases are in each group:
 
 ```{r}
 esoph %>% 
@@ -425,7 +434,7 @@ esoph %>%
 
 ```
 
-Exercise: What other plot types could you use to visualize the number of cases? Try them out!
+**Exercise: What other plot types could you use to visualize the number of cases? Try them out!**
 
 
 
@@ -453,11 +462,11 @@ esoph %>%
 
 ```
 
-Exercise: Reproduce this plot with the other grouping parameters!
+**Exercise: Reproduce this plot with the other grouping parameters!**
 
 
 
-Another option to visualize the data and also to visualize several parameters at once are heatmaps. Heatmaps can be used to visualize even high dimensional data (like mRNA expression levels of different cell lines). This high dimensional data usually gets clustered in different ways (e.g. hierarchical clustering or k-means) so one can see patches of high or low data points among the different samples. Since our data is already grouped and ordered we don't need to use a clustering algorithm and can just plot our data:
+Another option to visualize the data and also to visualize several parameters at once are heatmaps. Heatmaps can be used to visualize even high dimensional data (like mRNA expression levels of different cell lines). This high dimensional data usually gets clustered in different ways (e.g. hierarchical clustering or k-means) so one can see patches of high or low data points among the different samples. Since our data is already grouped and ordered we don't need to use a clustering algorithm and can just plot it: 
 
 ```{r}
 
@@ -470,7 +479,7 @@ esoph %>%
   geom_tile(aes(x = agegp, y = alcgp, fill = fraction)) +
   # use this colouring shema
   scale_fill_viridis_c(option = "B") +
-  labs(title = "Fraction of esophageal cancer cases age group vs alcohol consumption", 
+  labs(title = "Fraction of esophageal cancer cases, age group vs alcohol consumption", 
        x = "Age groups", 
        y = "Alcohol consumption") +
   # test another theme :)
@@ -478,7 +487,7 @@ esoph %>%
 
 ```
 
-Exercise: Plot the other grouping parameter combinations.
+**Exercise: Plot the other grouping parameter combinations.**
 
 
 We could also visualize our whole data set at once in such a heatmap: 
@@ -516,7 +525,7 @@ esoph %>%
 ```
 
 
-Now we can train linear models to predict the fraction. We will train our model on 2/3 of our data and use the remaining quarter as a test set of unknown data which our model aims to predict. Therefore, we will split the data set randomly. Note: Randomly splitting something means that every time it is repeated other datapoints will be selected which will slightly variate the model. However, computers cannot be "random", each randomness always is based on some reference points. We can set those reference point and thus making our model reproducable by using a seed: 
+Now we can train linear models to predict the fraction. We will train our model on 2/3 of our data and use the remaining third as a test set of unknown data which our model aims to predict. Therefore, we will split the data set randomly. Note: Randomly splitting something means that every time it is repeated other data points will be selected which will slightly variate the model. However, computers can not be "random", each randomness always is based on some reference points. We can set those reference points and thus making our model reproducible by using a seed: 
 
 ```{r}
 # set seed
@@ -546,7 +555,7 @@ Feel free to try other combinations or change the formula!
 
 
 
-To develop an actual Machine Learning algorithm one would not keep it that simple. One would:
+To develop an actual Machine Learning algorithm you would not keep it that simple. You would:
 
 - train the model on several variations of the training set since every variation would change the model outcome (k-fold-cross-variation). 
 - do several iterations with different randomly selected training data sets.
@@ -697,13 +706,13 @@ Preds_Rnds %>%
   facet_wrap(.~model_vars)
 ```
 
-Yes! Our mnodels (all of them) are better then our random model. But which of them is most accurate? Do we need the full model or are age and alcohol consumption sufficient to explain everything? Remember: Keep the model as simple as possible! 
+Yes! Our models (all of them) are better then our random model. But which of them is most accurate? Do we need the full model or are age and alcohol consumption sufficient to explain everything? Remember: Keep the model as simple as possible! 
 Plus, even if we see that the correlations between real and random model predictions are quite different and the correlations of each actual model are significantly different from a random distribution (not our random models!), are our models actually significantly different from the random models and from each other? 
 
 
 ### Hypothesis tests
 
-To answer these question we need to do hypothesis tests or analyse tests that have already been done while training the model, respectively. Generally, statistical tests ask whether data points are equal (Null-Hypothesis; H0) or not (Alternative-Hypothesis; H1). Each test calculates a test statistic parameter based on sample size and certain criteria (different for each test). The test statistic corresponds to a certain probability that our Null-Hypothesis (data is equal) is true. A threshold of 5 % (p <= 0.05) is often used to reject the Null-Hypothesis and thus state, that one data set is significantly different from another one. 
+To answer these question we need to do hypothesis tests. Generally, statistical tests ask whether data points are equal (Null-Hypothesis; H0) or not (Alternative-Hypothesis; H1). Each test calculates a test statistic parameter based on sample size and certain criteria (different for each test). The test statistic corresponds to a certain probability that our Null-Hypothesis (data is equal) is true. A threshold of 5 % (p <= 0.05) is often used to reject the Null-Hypothesis and thus state, that one data set is significantly different from another one. 
 
 There is a variety of tests that we can use to analyse data for significant difference. Different types of distributions require different types of tests. In our case we are mainly interested in:
 
@@ -737,7 +746,7 @@ See [Methodenberatung UZH](https://www.methodenberatung.uzh.ch/de/datenanalyse_s
 
 #### Which parameters have significant more influence on the model? 
 
-Based on our prediction accuracies we already got the impression that increasing age and alcohol consumption have the strongest impact on developing esophageal cancer. We can check that by looking onto the model itself. First, let's look at the summary of our full model: 
+Based on our prediction accuracies we already got the impression that increasing age and alcohol consumption have the strongest impact on developing esophageal cancer. We can check that by looking at the model itself. First, let's look at the summary of our full model: 
 
 ```{r}
 summary(model_full)
@@ -793,7 +802,7 @@ Next, let's compare the actual models among each other. There are two ways to do
 
 Since the analysis was not sufficient for the comparison of random vs real models we would not expect any significant results here. Still, let's try. 
 
-To begin with we do a Kruskal-Wallis-Test:
+Initially, we do a Kruskal-Wallis-Test:
 
 
 ```{r}
@@ -856,9 +865,9 @@ Altogether it indicates that a linear model based on age groups and alcohol cons
 ## Final notes
 
 
-1. Correlation is not causation! The most famous example is the one with storks and babies. Always keep in mind what data you are working with and whether what your analysis tells you makes sense. 
+1. Correlation is not causation! One of the most famous examples is the high correlation between high stork population and a high human baby birth rate.^[Matthews, Robert. (2000). Storks Deliver Babies (p= 0.008). Teaching Statistics. 22. 36 - 38. 10.1111/1467-9639.00013.] Always keep in mind what data you are working with and whether what your analysis tells you makes sense. 
 
-2. Know how to interpret models. Based on our given data set we could also argue that getting cancer increases the alcohol consumption. Maybe as a painkiller... 
+2. Know how to interpret models (and take a look at meta data). Based on our given data set we could also argue that getting cancer increases the alcohol consumption (if we know that the alcohol consumption started years before the cancer was diagnosed this conclusion becomes nonsense). 
 
 3. Keep your model as simple as possible, especially if you want to interpret it. Fewer variables also decrease the influence of noise.
 
