@@ -19,7 +19,8 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, error = TRU
 
 # Short introduction into R
 ## General
-R ([download here](https://www.r-project.org/)) is an open source environment for statistical programming which is mainly used for data analysis (including data cleaning and arranging, calculations, statistics, machine learning and plotting). It is running on all systems and can either be used in the console or via a graphical interface called R Studio ([download here](https://www.rstudio.com/products/rstudio/)). Feel free to download and install both and copy and paste the code blocks within this script into R/R Studio to follow each step.
+R ([download here](https://www.r-project.org/))^[R Core Team (2021). R: A language and environment for statistical computing. R
+  Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.] is an open source environment for statistical programming which is mainly used for data analysis (including data cleaning and arranging, calculations, statistics, machine learning and plotting). It is running on all systems and can either be used in the console or via a graphical interface called R Studio ([download here](https://www.rstudio.com/products/rstudio/)). Feel free to download and install both and copy and paste the code blocks within this script into R/R Studio to follow each step.
 
 
 Since this is no "introduction into R" workshop we will just give a few examples on how to use R in general. If you are interested in learning more about data analysis (with R or other programming languages) we can recommend [DataCamp courses](https://www.datacamp.com/) or using free, virtual books found on the the [R Studio Website](https://www.rstudio.com/resources/books/). 
@@ -282,7 +283,7 @@ For example, you can train a model that predicts the survival rate of lung cance
 There are many different types of machine learning algorithms as well as many different cases where they are used. The type of machine learning favored to explain a matter depends on the type of data (categorical / numeric), the amount of data and features (many, unnecessary features increase the noise and thus worsen your model) and the overall goal (explainable model for research purposes or only the performance). In health, machine learning is for example used for:
 
 - analysis of clinical trial data or general clinical research.
-- personalized medicine (which drug would be the best treatment for a certain patient?).
+- personalized medicine.
 - analysis of medical images (e.g. x-rays).
 - infectious disease outbreak prediction.
 - evaluation of risk factors.
@@ -297,7 +298,7 @@ The following part will contain most of the code we did run during the workshop.
 
 
 Generally, R is able to read in all types of data that can be downloaded from anywhere. You can for example load in any types of tables (.csv, .tsv, .xlxs, .txt, ...), plain text files or even images. For the sake of simplicity you do not need to manually download data. (Most databases sadly are not very user friendly. So keep that in mind when you search for usable data.) 
-Instead, we will use an [esophageal cancer data set](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/esoph.html)^[Breslow, N. E. and Day, N. E. (1980) Statistical Methods in Cancer Research. Volume 1: The Analysis of Case-Control Studies. IARC Lyon / Oxford University Press.] that is accessible after installing R.
+Instead, we will use an [(o)esophageal cancer data set](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/esoph.html)^[Breslow, N. E. and Day, N. E. (1980) Statistical Methods in Cancer Research. Volume 1: The Analysis of Case-Control Studies. IARC Lyon / Oxford University Press.] that is accessible after installing R.
 Additionally we will use the [*tidyverse*](https://www.tidyverse.org/packages/)^[Wickham et al., (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686, https://doi.org/10.21105/joss.01686] package.
 
 ### Install / load packages
@@ -365,7 +366,7 @@ Note: Emptying the environment just trashes objects and frees RAM. Librarys are 
 ## Load the data
 R comes with several data sets that are based on actual, real life data. Some of those data sets come with the installation of specific packages, others are part of the base R installation (and the package *datasets* that comes with it). You can find a list of pre-loaded data using the function `data()` without any parameters. 
 
-To access the data and load it into our R environment we need to use the function above and specify which data set we want to load. For now it is the data set "esoph".
+To access the data and load it into our R environment we need to use the function above and specify which data set we want to load. For now it is the data set "esoph". 
 
 ```{r}
 data("esoph")
@@ -381,11 +382,24 @@ First, lets have a look on the type of data that we have:
 # are all base R functions
 class(esoph)
 dim(esoph)
-colnames(esoph)
 
 ```
 
-So, `esoph` is a data frame with 88 rows and 5 columns with the names printed above.
+So, `esoph` is a data frame with 88 rows and 5 columns. But what data is contained in esoph?
+
+And what data do we actually explore? What is esophageal cancer?
+
+As mentioned previously, "esoph" is a (o)esophageal cancer data set. The esophagus is the muscle food pipe between your mouth and stomach. Esophageal cancer is a subgroup of cancers of the head and neck region that together have a global incidence of > 800,000 case. More than half of these cases arise in the esophagus.^[Bray, F. et al. Global cancer statistics 2018: GLOBOCAN estimates of incidence and mortality worldwide for 36 cancers in 185 countries. CA: A Cancer Journal for Clinicians 68, 394–424 (2018).] Head and neck cancers generally have a low survival rate that simply said depends on the risk factors one was exposed to and the region they arise. Esophageal cancers belong to the cancers with the most unfavorable survival chances (5-year survival rate of 22-24 % in Europe). Risk factors that increase the likelihood to develop esophageal cancer mainly are age, tobacco and alcohol consumption and weight.^[https://www.krebsdaten.de/Krebs/EN/Content/Cancer_sites/Oesophageal_cancer/oesophageal_cancer_node.html] 
+
+
+The esoph data set we explore contains data from a case-control study of esophageal cancer conducted in Ile-et-Vilaine, France. It contains numbers of diagnosed cancers across different groups of risk factors. Let's have a closer look on them by checking the columnames of esoph: 
+
+
+```{r}
+colnames(esoph)
+```
+
+
 
 - *agegp*: The age of the study participants, age groups.
 - *alcgp*: Amount of alcohol consumed in g / day, alcohol groups.
@@ -394,9 +408,8 @@ So, `esoph` is a data frame with 88 rows and 5 columns with the names printed ab
 - *ncontrols*: Number of not-cancerous study participants. 
 
 
-
-
-Let's have a look at the data contained in there. We can do that in several ways. We can have a look on the first few columns or ask R to give us some sort of overview or summary.  
+So, we have the number of cancers, the size of the control group and the risk factors age, alcohol and tobacco consumption. But how does the data actually look like? 
+We can check that in several ways. We can have a look on the first few columns or ask R to give us some sort of overview or summary.  
 ```{r}
 # prints the first 6 rows of our object
 head(esoph)
@@ -415,30 +428,22 @@ Especially using the `summary()` function is pretty useful since it would also p
 The esoph data set is already cleared up and hence is not containing any weird data. Still, cleaning a data set, independently from where it comes from, is the first step in any analysis pipeline.
 
 
-We now had a first glimpse on our data. However, to actually understand our data more than a glimpse is neccessary. We could go through the whole data frame and read everything by just printing the whole table. However, the bigger the data the nastier it is to do so. Instead of looking on our table of data we can start to visualize it. For example we could simply look how many cases are in each group:
+We now had a first glimpse on our data. However, to actually understand our data more than a glimpse is necessary. We could go through the whole data frame and read everything by just printing the whole table. However, the bigger the data the nastier it is to do so. Instead of looking on our table of data we can start to visualize it. For example we could simply look how many cases are detected in each age group:
 
 ```{r}
 esoph %>% 
-  # make a ggplot with number of cases on the x axis and the agegroups on the y axis
+  # make a ggplot with number of cases on the x axis and the age groups on the y axis
   ggplot(aes(x = ncases, y = agegp)) +
-  # specify you want a dot plot
-  geom_point()
-
-esoph %>% 
-  ggplot(aes(x = ncases, y = alcgp)) +
-  geom_point()
-
-esoph %>% 
-  ggplot(aes(x = ncases, y = tobgp)) +
-  geom_point()
+  # specify you want adot plot 
+  geom_point() 
 
 ```
 
-**Exercise: What other plot types could you use to visualize the number of cases? Try them out!**
+**Exercise: What other plot types could you use to visualize the number of cases? Try them out! Also plot the number of cases for the missing variables!**
 
 
 
-However, the number of cases within each group is nice to know but not really meaningful. Instead of looking at the absolute numbers we rather should look at the number of cancer diagnosis within all visited patients. For example, we could calculate the fraction of positive cases per age group, without taking alcohol or tobacco consumption into account: 
+The number of cases within each group is nice to know but not really meaningful. Instead of looking at the absolute numbers we rather should look at the number of cancer diagnosis within all visited patients. For example, we could calculate the fraction of positive cases per age group, without taking alcohol or tobacco consumption into account: 
 
 ```{r}
 
@@ -450,7 +455,7 @@ esoph %>%
   # do a ggplot
   ggplot(aes(x = agegp, y = fraction)) +
   # make a bar plot
-  geom_bar(stat = "identity", fill = "orange") +
+  geom_bar(stat = "identity", fill = "grey") +
   # change the general theme of the plot
   theme_bw() +
   # change labels
@@ -462,11 +467,11 @@ esoph %>%
 
 ```
 
-**Exercise: Reproduce this plot with the other grouping parameters!**
+**Exercise: Reproduce this plot with the other grouping parameters! Try out different themes!**
 
 
 
-Another option to visualize the data and also to visualize several parameters at once are heatmaps. Heatmaps can be used to visualize even high dimensional data (like mRNA expression levels of different cell lines). This high dimensional data usually gets clustered in different ways (e.g. hierarchical clustering or k-means) so one can see patches of high or low data points among the different samples. Since our data is already grouped and ordered we don't need to use a clustering algorithm and can just plot it: 
+Another option to visualize the data are heatmaps. Heatmaps can be used to visualize even high dimensional data (like mRNA expression levels of 20,000 genes measured in 1000 samples). This high dimensional data usually gets clustered in different ways (e.g. hierarchical clustering or k-means) so one can see patches of high or low expressed genes among the different samples. Since our data is already grouped and ordered we don't need to use a clustering algorithm and can just plot it: 
 
 ```{r}
 
@@ -482,15 +487,14 @@ esoph %>%
   labs(title = "Fraction of esophageal cancer cases, age group vs alcohol consumption", 
        x = "Age groups", 
        y = "Alcohol consumption") +
-  # test another theme :)
+  # use another theme
   theme_classic()
-
 ```
 
-**Exercise: Plot the other grouping parameter combinations.**
+**Exercise: Plot the other grouping parameter combinations. Try out different coloring schemes.**
 
 
-We could also visualize our whole data set at once in such a heatmap: 
+We could also visualize our whole data set at once: 
 
 ```{r}
 esoph %>% 
@@ -501,7 +505,7 @@ esoph %>%
   geom_tile(aes(x = tobgp, y = alcgp, fill = fraction)) +
   theme_classic() +
   scale_fill_viridis_c(option = "B") +
-  labs(title = "Fraction of esophageal cancer cases tabacco vs alcohol consumption", 
+  labs(title = "Fraction of esophageal cancer cases tabacco vs alcohol consumption\nwithin different age groups", 
        x = "Tabacco consumption", 
        y = "Alcohol consumption per day") +
   # we're missing the age information by now. So we make one heatmap for each age group
@@ -525,7 +529,7 @@ esoph %>%
 ```
 
 
-Now we can train linear models to predict the fraction. We will train our model on 2/3 of our data and use the remaining third as a test set of unknown data which our model aims to predict. Therefore, we will split the data set randomly. Note: Randomly splitting something means that every time it is repeated other data points will be selected which will slightly variate the model. However, computers can not be "random", each randomness always is based on some reference points. We can set those reference points and thus making our model reproducible by using a seed: 
+Now we can train linear models to predict the fraction. We will train our model on 2/3 of our data and use the remaining third as a test set of unknown data which our model aims to predict. Therefore, we will split the data set randomly. Note: Randomly splitting something means that every time it is repeated other data points will be selected which will slightly variate the model. However, computers can not be "random", each randomness always is based on some reference points. We can set these reference points and thus making our model reproducible by using a seed: 
 
 ```{r}
 # set seed
@@ -559,10 +563,10 @@ To develop an actual Machine Learning algorithm you would not keep it that simpl
 
 - train the model on several variations of the training set since every variation would change the model outcome (k-fold-cross-variation). 
 - do several iterations with different randomly selected training data sets.
-- test those model parameters on new data. 
+- test those model parameters on new data (which is why we only selected 2/3 of our data for training). 
 - use all above (especially the first two) to select the optimal model parameters.
 
-To keep it simple and calculation times minimal we will only test our model on new data (the one not selected for training). But first, lets have a look onto our model and how well it fits our data we trained it on. We can do that by using base R and the plot function. It will return four different plots: 
+To keep it simple and calculation times minimal we will only test our model on new data (the one not selected for training). But first, lets have a look on our model and how well it fits the data we trained it on. We can do that by using base R and the plot function. It will return four different plots: 
 
 ```{r}
 plot(model_full)
@@ -596,7 +600,7 @@ esoph[-Training,] %>%
 ```
 
 
-And then plot our predicted data vs our real data. Ideally we would expect a perfect diagonal where predicted data perfectly matches the real data. We will also calculate the correlation between predicted and real data: 
+And then plot our predicted data vs our real data. Ideally we would expect a perfect diagonal where predicted data perfectly matches the real data. We will also calculate the correlation between predicted and real data. There are different types of correlations one can calculate. Generally, they return a statistic that is any number between -1 (anti-correlated) and 1 (correlated) with 0 meaning no correlation at all. Here, we will use Pearson and Spearman Correlation. Pearson Correlation uses the actual values while Spearman Correlation uses the ranks of our data points (checking whether the lowest predicted data point is also the lowest actual data point). 
 
 ```{r}
 Predictions %>% 
