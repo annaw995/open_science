@@ -561,7 +561,7 @@ Feel free to try other combinations or change the formula!
 
 To develop an actual Machine Learning algorithm you would not keep it that simple. You would:
 
-- train the model on several variations of the training set since every variation would change the model outcome (k-fold-cross-variation). 
+- train the model on several variations of the training set since every variation would change the model outcome (k-fold-cross-validation). 
 - do several iterations with different randomly selected training data sets.
 - test those model parameters on new data (which is why we only selected 2/3 of our data for training). 
 - use all above (especially the first two) to select the optimal model parameters.

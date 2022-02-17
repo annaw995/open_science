@@ -575,8 +575,8 @@ rm(list = ls())
 # empty RAM
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb) max used  (Mb)
-## Ncells 1123373 60.0    2127132 113.7  2127132 113.7
-## Vcells 1912790 14.6    8388608  64.0  3242688  24.8</code></pre>
+## Ncells 1123643 60.1    2127487 113.7  2127487 113.7
+## Vcells 1913140 14.6    8388608  64.0  3243216  24.8</code></pre>
 <p>Note: Emptying the environment just trashes objects and frees RAM. Librarys are still active, so we do not need to load <em>tidyverse</em> again. Emptying the environment is strongly suggested whenever switching from one project to another to avoid using the wrong, already existing variables in the new project. Sometimes, it also is advisable to detach packages. This is done by the function <code>detach()</code>.</p>
 </div>
 <div id="load-the-data" class="section level2" number="2.3">
@@ -732,7 +732,7 @@ model_full &lt;- lm(fraction ~ agegp+alcgp*tobgp, data = esoph[Training,])</code
 <p>Feel free to try other combinations or change the formula!</p>
 <p>To develop an actual Machine Learning algorithm you would not keep it that simple. You would:</p>
 <ul>
-<li>train the model on several variations of the training set since every variation would change the model outcome (k-fold-cross-variation).</li>
+<li>train the model on several variations of the training set since every variation would change the model outcome (k-fold-cross-validation).</li>
 <li>do several iterations with different randomly selected training data sets.</li>
 <li>test those model parameters on new data (which is why we only selected 2/3 of our data for training).</li>
 <li>use all above (especially the first two) to select the optimal model parameters.</li>
